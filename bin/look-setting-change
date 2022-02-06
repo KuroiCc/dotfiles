@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export ZSH=$HOME/.dotfiles
+defaults read > $ZSH/osx/tmp/before
+read -p 'Change your setting, and press enter enter to continue...'
+defaults read > $ZSH/osx/tmp/after
+diff $ZSH/osx/tmp/before $ZSH/osx/tmp/after
