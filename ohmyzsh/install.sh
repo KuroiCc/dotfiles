@@ -1,7 +1,8 @@
 if [ ! -d ~/.oh-my-zsh ]
 then
   info '  Installing oh-my-zsh'
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+
 
   # Install zsh-wakatime, a ZSH plugin for wakatime
   cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/wbingli/zsh-wakatime.git
