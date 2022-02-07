@@ -1,11 +1,11 @@
 tap "homebrew/bundle"
 tap "homebrew/cask"
-tap "homebrew/core"
 
 brew "iperf3"
 brew "mas"
 brew "yt-dlp/taps/yt-dlp"
 
+cake "visual-studio-code"
 cask "fliqlo"
 cask "background-music"
 cask "docker", args: { appdir: "/Applications" }
