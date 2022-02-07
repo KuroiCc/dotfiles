@@ -1,3 +1,6 @@
 git/gitconfig.local.symlink
 /macos/os-setting.env.sh
 /macos/tmp
+
+/zsh/zshrc.symlink.bk
+/script/test
