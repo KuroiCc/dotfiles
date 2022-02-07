@@ -1,10 +1,10 @@
 #!/bin/bash
 
+export DOTFILES=$HOME/.dotfiles
 if [ ! -d $DOTFILES/macos/tmp ]; then
     mkdir -p $DOTFILES/macos/tmp
 fi
 
-export DOTFILES=$HOME/.dotfiles
 defaults read >$DOTFILES/macos/tmp/before
 read -p 'Change your setting, and press enter enter to continue...'
 defaults read >$DOTFILES/macos/tmp/after
