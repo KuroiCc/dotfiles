@@ -7,12 +7,12 @@
 #
 # Run ./set-defaults.sh and you'll be good to go.
 
-if [ ! -f "$ZSH/macos/os-setting.env.sh" ]; then
+if [ ! -f "$DOTFILES/macos/os-setting.env.sh" ]; then
   echo "os-setting.env.sh not found"
   read -p "Your computer name:" ComputerName
-  echo "export ComputerName=$ComputerName" >>$ZSH/macos/os-setting.env.sh
+  echo "export ComputerName=$ComputerName" >>$DOTFILES/macos/os-setting.env.sh
 fi
-sh "$ZSH/macos/os-setting.env.sh"
+sh "$DOTFILES/macos/os-setting.env.sh"
 # Set computer name (as done via System Preferences → Sharing)
 sudo scutil --set ComputerName "${ComputerName:?"ComputerName is not set"}"
 
