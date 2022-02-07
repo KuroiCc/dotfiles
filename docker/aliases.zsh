@@ -1,0 +1,1 @@
+alias dockerc="docker-compose"
