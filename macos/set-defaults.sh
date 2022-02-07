@@ -9,7 +9,8 @@
 
 if [ ! -f "$DOTFILES/macos/os-setting.env.sh" ]; then
   echo "os-setting.env.sh not found"
-  read -p "Your computer name:" ComputerName
+  user ' - What is your your computer name?'
+  read -e ComputerName
   echo "export ComputerName=$ComputerName" >>$DOTFILES/macos/os-setting.env.sh
 fi
 sh "$DOTFILES/macos/os-setting.env.sh"
