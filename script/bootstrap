@@ -135,7 +135,8 @@ install_dotfiles () {
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
-  sudo -E -u root bash -c "$(declare -f link_file); link_file $(find -H `$DOTFILES_ROOT` -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') `/etc/hosts`"
+  sudo -u root chown $USER /etc/hosts
+  link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
 }
 
 setup_gitconfig
