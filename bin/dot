@@ -45,10 +45,11 @@ $DOTFILES/macos/set-defaults.sh
 
 # Install homebrew
 $DOTFILES/homebrew/install.sh 2>&1
+source $DOTFILES/homebrew/path.zsh
 
 # Upgrade homebrew
 echo "› brew update"
-/opt/homebrew/bin/brew update
+brew update
 
 # Install software
 echo "› $DOTFILES/script/install"
