@@ -1,5 +1,6 @@
 tap "homebrew/bundle"
 tap "homebrew/cask"
+tap "yt-dlp/taps"
 
 brew "iperf3"
 brew "mas"
