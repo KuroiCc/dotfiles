@@ -14,6 +14,7 @@ if [ ! -f "$DOTFILES/macos/os-setting.env.sh" ]; then
   echo ' - What is your your computer name?'
   read -e ComputerName
   echo "export ComputerName=$ComputerName" >>$DOTFILES/macos/os-setting.env.sh
+  echo "save to $DOTFILES/macos/os-setting.env.sh"
 fi
 sh "$DOTFILES/macos/os-setting.env.sh"
 # Set computer name (as done via System Preferences → Sharing)
