@@ -102,13 +102,13 @@ link_file () {
 
     if [ "$overwrite" == "true" ]
     then
-      sodu rm -rf "$dst"
+      sudo rm -rf "$dst"
       success "removed $dst"
     fi
 
     if [ "$backup" == "true" ]
     then
-      sodu mv "$dst" "${dst}.backup"
+      sudo mv "$dst" "${dst}.backup"
       success "moved $dst to ${dst}.backup"
     fi
 
