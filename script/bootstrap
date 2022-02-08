@@ -122,6 +122,7 @@ link_file () {
   then
     if [ $2 == "/etc/hosts" ]
     then
+      info "make link to $2"
       sudo ln -s "$src" "$dst"
     else
       ln -s "$1" "$2"
