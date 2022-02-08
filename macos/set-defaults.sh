@@ -47,7 +47,7 @@ defaults write com.apple.controlcenter "NSStatusItem Visible Item-2" -bool false
 defaults write com.apple.controlcenter "NSStatusItem Visible Item-3" -bool false
 defaults write com.apple.controlcenter "NSStatusItem Visible Item-4" -bool false
 defaults write com.apple.controlcenter "NSStatusItem Visible WiFi" -bool true
-defaults write com.apple.controlcenter "NSStatusItem Visible Sound"-bool true
+defaults write com.apple.controlcenter "NSStatusItem Visible Sound" -bool true
 
 # Menu bar: show the VPN icon
 defaults write com.apple.systemuiserver menuExtras -array \
