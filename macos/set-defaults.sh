@@ -32,7 +32,7 @@ defaults write com.apple.menuextra.clock ShowSeconds -bool true
 defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5 EEE  H:mm"
 
 # Menu bar
-defaults write com.apple.controlcenter menuExtras -array \
+defaults write com.apple.controlcenter -array \
   '"NSStatusItem Preferred Position Clock" = 1;' \
   '"NSStatusItem Preferred Position BentoBox" = 2;' \
   '"NSStatusItem Preferred Position Battery" = 3;' \
