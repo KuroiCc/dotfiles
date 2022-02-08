@@ -20,86 +20,25 @@ source "$DOTFILES/macos/os-setting.env.sh"
 # Set computer name (as done via System Preferences → Sharing)
 sudo scutil --set ComputerName "${ComputerName:?"ComputerName is not set"}"
 
-# Disable press-and-hold for keys in favor of key repeat.
-# defaults write -g ApplePressAndHoldEnabled -bool false
+###############################################################################
+# General UI/UX                                                               #
+###############################################################################
 
-# Use AirDrop over every interface. srsly this should be a default.
-defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
-
-# Always open everything in Finder's list view. This is important.
-defaults write com.apple.Finder FXPreferredViewStyle Nlsv
-
-defaults write com.apple.finder AppleShowAllFiles -bool true
-
-# Show the ~/Library folder.
-chflags nohidden ~/Library
-
-# Set a really fast key repeat.
-# defaults write NSGlobalDomain KeyRepeat -int 1
-
-# Set the Finder prefs for showing a few different volumes on the Desktop.
-# defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
-# defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool true
-
-# Run the screensaver if we're in the bottom-left hot corner.
-# defaults write com.apple.dock wvous-bl-corner -int 5
-# defaults write com.apple.dock wvous-bl-modifier -int 0
-
-# Hide Safari's bookmark bar.
-defaults write com.apple.Safari ShowFavoritesBar -bool false
-
-# Set up Safari for development.
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
-defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
-
-# Set battery and power standby delay to 24 hours (default is 1 hour)
-sudo pmset -b displaysleep 15
-sudo pmset -c displaysleep 180
-
-# Enable/Disable battery and power sleep mode
-sudo pmset -c sleep 0
-
-# Enable the battery low power mode
-sudo pmset -b lowpowermode 1
+# Use dark menu bar and Dock
+defaults write "Apple Global Domain" AppleInterfaceStyle Dark
 
 # Menu bar: show the VPN icon
 defaults write com.apple.systemuiserver menuExtras -array \
   "/System/Library/CoreServices/Menu Extras/VPN.menu"
 
-# Trackpad: enable tap
-defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-
-# Trackpad: enable three finger drag
-defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
-
 # Disable shadow in screenshots
 defaults write com.apple.screencapture disable-shadow -bool true
-
-# Finder: show all filename extensions
-defaults write "Apple Global Domain" AppleShowAllExtensions -bool true
-
-# Finder: show status bar
-defaults write com.apple.finder ShowStatusBar -bool true
-
-# Finder: show path bar
-defaults write com.apple.finder ShowPathbar -bool true
-
-# When performing a search, search the current folder by default
-defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
-
-# Use dark menu bar and Dock
-defaults write "Apple Global Domain" AppleInterfaceStyle Dark
 
 # Don’t automatically rearrange Spaces based on most recent use
 defaults write com.apple.dock mru-spaces -bool false
 
-# Automatically hide and show the Dock
-defaults write com.apple.dock autohide -bool true
+# Avoid creating .DS_Store files on network volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
 # Hot corners
 # Possible values:
@@ -122,13 +61,97 @@ defaults write com.apple.dock wvous-tr-modifier -int 0
 # Bottom left screen corner
 defaults write com.apple.dock wvous-bl-corner -int 2
 defaults write com.apple.dock wvous-bl-modifier -int 0
-
 # Bottom right screen corner
 defaults write com.apple.dock wvous-br-corner -int 1
 defaults write com.apple.dock wvous-br-modifier -int 1048576
 
-# Avoid creating .DS_Store files on network volumes
-defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+# Automatically hide and show the Dock
+defaults write com.apple.dock autohide -bool true
+
+# Set the size of the Dock
+defaults write com.apple.dock tilesize -int 80
+
+# Enable Dock zoom animation
+defaults write com.apple.dock magnification -bool true
+
+# Max zoom scale
+defaults write com.apple.dock largesize -int 128
+
+###############################################################################
+# Power                                                                       #
+###############################################################################
+
+# Set battery and power standby delay to 24 hours (default is 1 hour)
+sudo pmset -b displaysleep 15
+sudo pmset -c displaysleep 180
+
+# Enable/Disable battery and power sleep mode
+sudo pmset -c sleep 0
+
+# Enable the battery low power mode
+sudo pmset -b lowpowermode 1
+
+###############################################################################
+# Screen                                                                      #
+###############################################################################
+
+###############################################################################
+# Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
+###############################################################################
+
+# Trackpad: enable tap
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+
+# Trackpad: enable three finger drag
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+
+###############################################################################
+# Finder                                                                      #
+###############################################################################
+
+# Always open everything in Finder's list view. This is important.
+defaults write com.apple.Finder FXPreferredViewStyle Nlsv
+
+# Show all files in Finder.
+defaults write com.apple.finder AppleShowAllFiles -bool true
+
+# When performing a search, search the current folder by default
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+# Show the ~/Library folder.
+chflags nohidden ~/Library
+
+# Set the Finder prefs for not showing a few different volumes on the Desktop.
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
+
+# Use AirDrop over every interface. srsly this should be a default.
+defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
+
+# Finder: show all filename extensions
+defaults write "Apple Global Domain" AppleShowAllExtensions -bool true
+
+# Finder: show status bar
+defaults write com.apple.finder ShowStatusBar -bool true
+
+# Finder: show path bar
+defaults write com.apple.finder ShowPathbar -bool true
+
+###############################################################################
+# Safari                                                                      #
+###############################################################################
+
+# Hide Safari's bookmark bar.
+defaults write com.apple.Safari ShowFavoritesBar -bool false
+
+# Set up Safari for development.
+defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+defaults write com.apple.Safari IncludeDevelopMenu -bool true
+defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
+defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
 for app in "Dock" "Finder"; do
   killall "${app}" >/dev/null 2>&1
