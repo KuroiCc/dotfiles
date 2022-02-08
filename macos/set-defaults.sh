@@ -38,16 +38,16 @@ defaults write com.apple.controlcenter "NSStatusItem Preferred Position Battery"
 defaults write com.apple.controlcenter "NSStatusItem Preferred Position Sound" -int 4
 defaults write com.apple.controlcenter "NSStatusItem Preferred Position Bluetooth" -int 5
 defaults write com.apple.controlcenter "NSStatusItem Preferred Position WiFi" -int 6
-defaults write com.apple.controlcenter "NSStatusItem Visible BentoBox" -bool 1
-defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool 1
-defaults write com.apple.controlcenter "NSStatusItem Visible Clock" -bool 1
-defaults write com.apple.controlcenter "NSStatusItem Visible Item-0" -bool 0
-defaults write com.apple.controlcenter "NSStatusItem Visible Item-1" -bool 0
-defaults write com.apple.controlcenter "NSStatusItem Visible Item-2" -bool 0
-defaults write com.apple.controlcenter "NSStatusItem Visible Item-3" -bool 0
-defaults write com.apple.controlcenter "NSStatusItem Visible Item-4" -bool 0
-defaults write com.apple.controlcenter "NSStatusItem Visible WiFi" -bool 1
-defaults write com.apple.controlcenter "NSStatusItem Visible Sound"-bool=1
+defaults write com.apple.controlcenter "NSStatusItem Visible BentoBox" -bool true
+defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool true
+defaults write com.apple.controlcenter "NSStatusItem Visible Clock" -bool true
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-0" -bool false
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-1" -bool false
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-2" -bool false
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-3" -bool false
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-4" -bool false
+defaults write com.apple.controlcenter "NSStatusItem Visible WiFi" -bool true
+defaults write com.apple.controlcenter "NSStatusItem Visible Sound"-bool true
 
 # Menu bar: show the VPN icon
 defaults write com.apple.systemuiserver menuExtras -array \
