@@ -136,6 +136,7 @@ install_dotfiles () {
     link_file "$src" "$dst"
   done
   sudo -u root chown $USER /etc/hosts
+  sudo -u root chmod 754 /etc/hosts
   link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
 }
 
