@@ -149,6 +149,11 @@ defaults write com.apple.finder ShowStatusBar -bool true
 # Finder: show path bar
 defaults write com.apple.finder ShowPathbar -bool true
 
+# Finder: Open iCloud Drive in new window
+defaults write com.apple.finder NSNavLastRootDirectory -string "~/Library/Mobile Documents/com~apple~CloudDocs"
+defaults write com.apple.finder NewWindowTarget -string "PfID"
+defaults write com.apple.finder NewWindowTargetPath -string "file:///Users/{$USER}/Library/Mobile%20Documents/com~apple~CloudDocs/"
+
 ###############################################################################
 # Safari                                                                      #
 ###############################################################################
