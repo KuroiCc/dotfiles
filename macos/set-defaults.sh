@@ -33,12 +33,12 @@ defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5 EE
 
 # Menu bar
 defaults write com.apple.controlcenter menuExtras -array \
-  '"NSStatusItem Preferred Position Clock" = 86;' \
-  '"NSStatusItem Preferred Position BentoBox" = 164;' \
-  '"NSStatusItem Preferred Position Battery" = 196;' \
-  '"NSStatusItem Preferred Position Sound" = 304;' \
-  '"NSStatusItem Preferred Position Bluetooth" = 378;' \
-  '"NSStatusItem Preferred Position WiFi" = 410;' \
+  '"NSStatusItem Preferred Position Clock" = 1;' \
+  '"NSStatusItem Preferred Position BentoBox" = 2;' \
+  '"NSStatusItem Preferred Position Battery" = 3;' \
+  '"NSStatusItem Preferred Position Sound" = 4;' \
+  '"NSStatusItem Preferred Position Bluetooth" = 5;' \
+  '"NSStatusItem Preferred Position WiFi" = 6;' \
   '"NSStatusItem Visible BentoBox" = 1;' \
   '"NSStatusItem Visible Bluetooth" = 1;' \
   '"NSStatusItem Visible Clock" = 1;' \
@@ -46,11 +46,15 @@ defaults write com.apple.controlcenter menuExtras -array \
   '"NSStatusItem Visible Item-1" = 0;' \
   '"NSStatusItem Visible Item-2" = 0;' \
   '"NSStatusItem Visible Item-3" = 0;' \
-  '"NSStatusItem Visible WiFi" = 1;'
+  '"NSStatusItem Visible Item-4" = 0;' \
+  '"NSStatusItem Visible WiFi" = 1;' \
+  '"NSStatusItem Visible Sound" = 1;'
 
 # Menu bar: show the VPN icon
 defaults write com.apple.systemuiserver menuExtras -array \
   "/System/Library/CoreServices/Menu Extras/VPN.menu"
+defaults write com.apple.systemuiserver "NSStatusItem Preferred Position com.apple.menuextra.vpn" -int 446
+
 
 # Disable shadow in screenshots
 defaults write com.apple.screencapture disable-shadow -bool true
