@@ -32,23 +32,22 @@ defaults write com.apple.menuextra.clock ShowSeconds -bool true
 defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5 EEE  H:mm"
 
 # Menu bar
-defaults write com.apple.controlcenter -array \
-  '"NSStatusItem Preferred Position Clock" = 1;' \
-  '"NSStatusItem Preferred Position BentoBox" = 2;' \
-  '"NSStatusItem Preferred Position Battery" = 3;' \
-  '"NSStatusItem Preferred Position Sound" = 4;' \
-  '"NSStatusItem Preferred Position Bluetooth" = 5;' \
-  '"NSStatusItem Preferred Position WiFi" = 6;' \
-  '"NSStatusItem Visible BentoBox" = 1;' \
-  '"NSStatusItem Visible Bluetooth" = 1;' \
-  '"NSStatusItem Visible Clock" = 1;' \
-  '"NSStatusItem Visible Item-0" = 0;' \
-  '"NSStatusItem Visible Item-1" = 0;' \
-  '"NSStatusItem Visible Item-2" = 0;' \
-  '"NSStatusItem Visible Item-3" = 0;' \
-  '"NSStatusItem Visible Item-4" = 0;' \
-  '"NSStatusItem Visible WiFi" = 1;' \
-  '"NSStatusItem Visible Sound" = 1;'
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Clock" -int 1
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position BentoBox" -int 2
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Battery" -int 3
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Sound" -int 4
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position Bluetooth" -int 5
+defaults write com.apple.controlcenter "NSStatusItem Preferred Position WiFi" -int 6
+defaults write com.apple.controlcenter "NSStatusItem Visible BentoBox" -bool 1
+defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool 1
+defaults write com.apple.controlcenter "NSStatusItem Visible Clock" -bool 1
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-0" -bool 0
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-1" -bool 0
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-2" -bool 0
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-3" -bool 0
+defaults write com.apple.controlcenter "NSStatusItem Visible Item-4" -bool 0
+defaults write com.apple.controlcenter "NSStatusItem Visible WiFi" -bool 1
+defaults write com.apple.controlcenter "NSStatusItem Visible Sound"-bool=1
 
 # Menu bar: show the VPN icon
 defaults write com.apple.systemuiserver menuExtras -array \
