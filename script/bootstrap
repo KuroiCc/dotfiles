@@ -102,13 +102,13 @@ link_file () {
 
     if [ "$overwrite" == "true" ]
     then
-      rm -rf "$dst"
+      sudo rm -rf "$dst"
       success "removed $dst"
     fi
 
     if [ "$backup" == "true" ]
     then
-      mv "$dst" "${dst}.backup"
+      sudo mv "$dst" "${dst}.backup"
       success "moved $dst to ${dst}.backup"
     fi
 
@@ -120,7 +120,12 @@ link_file () {
 
   if [ "$skip" != "true" ]  # "false" or empty
   then
-    ln -s "$1" "$2"
+    if [ $2 == "/etc/hosts" ]
+    then
+      sudo ln -s "$src" "$dst"
+    else
+      ln -s "$1" "$2"
+    fi
     success "linked $1 to $2"
   fi
 }
@@ -135,10 +140,7 @@ install_dotfiles () {
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
-
-  alias link_file='bash -c "$(declare -f link_file); link_file"' 
-  alias sudo='sudo '
-  sudo link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
+  link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
 }
 
 setup_gitconfig
