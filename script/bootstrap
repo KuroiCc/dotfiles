@@ -102,13 +102,13 @@ link_file () {
 
     if [ "$overwrite" == "true" ]
     then
-      rm -rf "$dst"
+      sodu rm -rf "$dst"
       success "removed $dst"
     fi
 
     if [ "$backup" == "true" ]
     then
-      mv "$dst" "${dst}.backup"
+      sodu mv "$dst" "${dst}.backup"
       success "moved $dst to ${dst}.backup"
     fi
 
@@ -135,7 +135,9 @@ install_dotfiles () {
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
-  sudo -E -u root bash -c "$(declare -f link_file); link_file $(find -H $DOTFILES_ROOT -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') '/etc/hosts'"
+
+  link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
+
 }
 
 setup_gitconfig
