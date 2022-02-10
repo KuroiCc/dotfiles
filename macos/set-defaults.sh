@@ -34,13 +34,15 @@ defaults write com.apple.menuextra.clock ShowSeconds -bool true
 defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5 EEE  H:mm"
 
 # Menu bar: hide the spotlight icon
+# Don't work on macOS 12.3
 defaults write com.apple.systemuiserver dontAutoLoad -array \
   "/System/Library/CoreServices/Menu Extras/Spotlight.menu"
 
 # Menu bar: show the VPN, Volume icon
 defaults write com.apple.systemuiserver menuExtras -array \
-  "/System/Library/CoreServices/Menu Extras/Volume.menu" \
-  "/System/Library/CoreServices/Menu Extras/VPN.menu"
+  "/System/Library/CoreServices/Menu Extras/VPN.menu" \
+  # Don't work on macOS 12.3
+  "/System/Library/CoreServices/Menu Extras/Volume.menu"
 
 #### Hot corners
 # Possible values:
@@ -181,6 +183,7 @@ defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.Web
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
 # Prevent Safari from opening ‘safe’ files automatically after downloading
+# Don't work on macOS 12.3. May from big sur?
 defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 
 for app in "Activity Monitor" \
