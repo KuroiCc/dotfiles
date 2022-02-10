@@ -27,30 +27,22 @@ sudo scutil --set ComputerName "${ComputerName:?"ComputerName is not set"}"
 # Use dark menu bar and Dock
 defaults write "Apple Global Domain" AppleInterfaceStyle Dark
 
+#### Menu bar
+
 # Menu bar: show secondary time
 defaults write com.apple.menuextra.clock ShowSeconds -bool true
 defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5 EEE  H:mm"
 
-# Menu bar
+# Menu bar: hide the spotlight icon
+defaults write com.apple.systemuiserver dontAutoLoad -array \
+  "/System/Library/CoreServices/Menu Extras/Spotlight.menu"
 
-# Menu bar: show the VPN icon
+# Menu bar: show the VPN, Volume icon
 defaults write com.apple.systemuiserver menuExtras -array \
+  "/System/Library/CoreServices/Menu Extras/Volume.menu" \
   "/System/Library/CoreServices/Menu Extras/VPN.menu"
-defaults write com.apple.systemuiserver "NSStatusItem Preferred Position com.apple.menuextra.vpn" -int 446
 
-# Add US English keyboard layout
-defaults write ".GlobalPreferences_m" AppleLanguages -array-add "en-US"
-
-# Disable shadow in screenshots
-defaults write com.apple.screencapture disable-shadow -bool true
-
-# Don’t automatically rearrange Spaces based on most recent use
-defaults write com.apple.dock mru-spaces -bool false
-
-# Avoid creating .DS_Store files on network volumes
-defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-
-# Hot corners
+#### Hot corners
 # Possible values:
 #  0: no-op
 #  2: Mission Control
@@ -75,6 +67,8 @@ defaults write com.apple.dock wvous-bl-modifier -int 0
 defaults write com.apple.dock wvous-br-corner -int 1
 defaults write com.apple.dock wvous-br-modifier -int 1048576
 
+#### Dock
+
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
 
@@ -86,6 +80,17 @@ defaults write com.apple.dock magnification -bool true
 
 # Max zoom scale
 defaults write com.apple.dock largesize -int 128
+
+#### Other
+
+# Add US English keyboard layout
+defaults write ".GlobalPreferences_m" AppleLanguages -array-add "en-US"
+
+# Disable shadow in screenshots
+defaults write com.apple.screencapture disable-shadow -bool true
+
+# Don’t automatically rearrange Spaces based on most recent use
+defaults write com.apple.dock mru-spaces -bool false
 
 ###############################################################################
 # Power                                                                       #
@@ -100,10 +105,6 @@ sudo pmset -c sleep 0
 
 # Enable the battery low power mode
 sudo pmset -b lowpowermode 1
-
-###############################################################################
-# Screen                                                                      #
-###############################################################################
 
 ###############################################################################
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
@@ -124,11 +125,24 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 # Always open everything in Finder's list view. This is important.
 defaults write com.apple.Finder FXPreferredViewStyle Nlsv
 
-# Show all files in Finder.
+# Finder: show hidden files by default
 defaults write com.apple.finder AppleShowAllFiles -bool true
+
+# Finder: show all filename extensions
+defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+defaults write "Apple Global Domain" AppleShowAllExtensions -bool true
 
 # When performing a search, search the current folder by default
 defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+# Finder: show status bar
+defaults write com.apple.finder ShowStatusBar -bool true
+
+# Finder: show path bar
+defaults write com.apple.finder ShowPathbar -bool true
+
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
 
 # Show the ~/Library folder.
 chflags nohidden ~/Library
@@ -140,19 +154,14 @@ defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
 # Use AirDrop over every interface. srsly this should be a default.
 defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
 
-# Finder: show all filename extensions
-defaults write "Apple Global Domain" AppleShowAllExtensions -bool true
-
-# Finder: show status bar
-defaults write com.apple.finder ShowStatusBar -bool true
-
-# Finder: show path bar
-defaults write com.apple.finder ShowPathbar -bool true
-
 # Finder: Open iCloud Drive in new window
-defaults write com.apple.finder NSNavLastRootDirectory -string "~/Library/Mobile Documents/com~apple~CloudDocs"
-defaults write com.apple.finder NewWindowTarget -string "PfID"
-defaults write com.apple.finder NewWindowTargetPath -string "file:///Users/{$USER}/Library/Mobile%20Documents/com~apple~CloudDocs/"
+defaults write com.apple.finder NSNavLastRootDirectory -string "~/Library/Mobile\ Documents/com~apple~CloudDocs"
+defaults write com.apple.finder NewWindowTarget -string "PfDe"
+defaults write com.apple.finder NewWindowTargetPath -string "file:///${HOME}/Library/Mobile\ Documents/com\~apple\~CloudDocs"
+
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 ###############################################################################
 # Safari                                                                      #
@@ -161,6 +170,9 @@ defaults write com.apple.finder NewWindowTargetPath -string "file:///Users/{$USE
 # Hide Safari's bookmark bar.
 defaults write com.apple.Safari ShowFavoritesBar -bool false
 
+# Show the full URL in the address bar (note: this still hides the scheme)
+defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
+
 # Set up Safari for development.
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
@@ -168,7 +180,31 @@ defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool 
 defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
-for app in "Dock" "Finder"; do
-  killall "${app}" >/dev/null 2>&1
+# Prevent Safari from opening ‘safe’ files automatically after downloading
+defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+
+for app in "Activity Monitor" \
+  "Address Book" \
+  "Calendar" \
+  "cfprefsd" \
+  "Contacts" \
+  "Dock" \
+  "Finder" \
+  "Google Chrome Canary" \
+  "Google Chrome" \
+  "Mail" \
+  "Messages" \
+  "Opera" \
+  "Photos" \
+  "Safari" \
+  "SizeUp" \
+  "Spectacle" \
+  "SystemUIServer" \
+  "Terminal" \
+  "Transmission" \
+  "Tweetbot" \
+  "Twitter" \
+  "iCal"; do
+  killall "${app}" &>/dev/null
 done
 echo "Done. Note that some of these changes require a logout/restart to take effect."
