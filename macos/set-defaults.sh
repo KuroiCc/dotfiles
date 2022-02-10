@@ -156,8 +156,8 @@ defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
 
 # Finder: Open iCloud Drive in new window
 defaults write com.apple.finder NSNavLastRootDirectory -string "~/Library/Mobile\ Documents/com~apple~CloudDocs"
-defaults write com.apple.finder NewWindowTarget -string "PfDe"
-defaults write com.apple.finder NewWindowTargetPath -string "file:///${HOME}/Library/Mobile\ Documents/com\~apple\~CloudDocs"
+defaults write com.apple.finder NewWindowTarget -string "PfID"
+defaults write com.apple.finder NewWindowTargetPath -string "file:///${HOME}/Library/Mobile%20Documents/com~apple~CloudDocs/"
 
 # Avoid creating .DS_Store files on network or USB volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
