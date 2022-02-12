@@ -175,6 +175,10 @@ defaults write com.apple.Safari ShowFavoritesBar -bool false
 # Show the full URL in the address bar (note: this still hides the scheme)
 defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 
+# Prevent Safari from opening ‘safe’ files automatically after downloading
+# Don't work on macOS 12.3. May from big sur?
+defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
+
 # Set up Safari for development.
 defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
@@ -182,9 +186,6 @@ defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool 
 defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
-# Prevent Safari from opening ‘safe’ files automatically after downloading
-# Don't work on macOS 12.3. May from big sur?
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 
 for app in "Activity Monitor" \
   "Address Book" \
