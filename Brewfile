@@ -18,6 +18,7 @@ cask "adobe-acrobat-pro"
 cask "docker", args: { appdir: "/Applications" }
 cask "google-chrome"
 cask "visual-studio-code"
+cask "microsoft-remote-desktop"
 
 mas "Xcode", id: 497799835
 
@@ -35,4 +36,3 @@ mas "Microsoft Excel", id: 462058435
 mas "Microsoft OneNote", id: 784801555
 mas "Microsoft Outlook", id: 985367838
 mas "Microsoft PowerPoint", id: 462062816
-mas "Microsoft Remote Desktop", id: 1295203466
