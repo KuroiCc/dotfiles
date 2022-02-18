@@ -112,6 +112,9 @@ sudo pmset -b lowpowermode 1
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input                 #
 ###############################################################################
 
+# Trackpad: speed up
+defaults write com.apple.trackpad.scaling -int 3
+
 # Trackpad: enable tap
 defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
@@ -119,6 +122,9 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool
 # Trackpad: enable three finger drag
 defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
+
+# keyboard: fnState
+defaults write com.apple.keyboard.fnState -bool true
 
 ###############################################################################
 # Finder                                                                      #
