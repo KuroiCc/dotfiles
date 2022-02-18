@@ -40,9 +40,9 @@ defaults write com.apple.systemuiserver dontAutoLoad -array \
 
 # Menu bar: show the VPN, Volume icon
 defaults write com.apple.systemuiserver menuExtras -array \
-  "/System/Library/CoreServices/Menu Extras/VPN.menu" \
-  # Don't work on macOS 12.3
-  # "/System/Library/CoreServices/Menu Extras/Volume.menu"
+  "/System/Library/CoreServices/Menu Extras/VPN.menu"
+# Don't work on macOS 12.3
+# "/System/Library/CoreServices/Menu Extras/Volume.menu"
 
 #### Hot corners
 # Possible values:
@@ -86,7 +86,7 @@ defaults write com.apple.dock largesize -int 128
 #### Other
 
 # Add US English keyboard layout
-defaults write ".GlobalPreferences_m" AppleLanguages -array-add "en-US"
+defaults write ".GlobalPreferences_m" AppleLanguages -array "zh-Hans-JP" "ja-JP" "en-US"
 
 # Disable shadow in screenshots
 defaults write com.apple.screencapture disable-shadow -bool true
@@ -125,6 +125,8 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 
 # keyboard: fnState
 defaults write com.apple.keyboard.fnState -bool true
+
+defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 
 ###############################################################################
 # Finder                                                                      #
@@ -191,7 +193,6 @@ defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
 defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
 defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
-
 
 for app in "Activity Monitor" \
   "Address Book" \
