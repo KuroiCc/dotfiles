@@ -42,7 +42,7 @@ defaults write com.apple.systemuiserver dontAutoLoad -array \
 defaults write com.apple.systemuiserver menuExtras -array \
   "/System/Library/CoreServices/Menu Extras/VPN.menu" \
   # Don't work on macOS 12.3
-  "/System/Library/CoreServices/Menu Extras/Volume.menu"
+  # "/System/Library/CoreServices/Menu Extras/Volume.menu"
 
 #### Hot corners
 # Possible values:
