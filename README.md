@@ -1,7 +1,6 @@
 # dotfiles
-[Original Repo](https://github.com/holman/dotfiles)
 
-Thanks to [holman](https://github.com/holman)'s great work! 
+Thanks to [holman](https://github.com/holman)'s great work! [original repo is here](https://github.com/holman/dotfiles).
 
 This repo is a fork of his dotfiles repo. And customize it to my preference.
 
