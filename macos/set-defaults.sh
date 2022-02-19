@@ -18,7 +18,14 @@ if [ ! -f "$DOTFILES/macos/os-setting.env.sh" ]; then
 fi
 source "$DOTFILES/macos/os-setting.env.sh"
 # Set computer name (as done via System Preferences → Sharing)
-sudo scutil --set ComputerName "${ComputerName:?"ComputerName is not set"}"
+if [ "$(scutil --get ComputerName)" != "${ComputerName:?"ComputerName is not set"}" ]; then
+  sudo scutil --set ComputerName "${ComputerName:?"ComputerName is not set"}"
+  sudo scutil --set HostName "${ComputerName:?"ComputerName is not set"}"
+  sudo scutil --set LocalHostName "${ComputerName:?"ComputerName is not set"}"
+  sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "${ComputerName:?"ComputerName is not set"}"
+else
+  echo "ComputerName=$(scutil --get ComputerName)"
+fi
 
 ###############################################################################
 # General UI/UX                                                               #
@@ -37,7 +44,7 @@ defaults write "Apple Global Domain" AppleInterfaceStyle Dark
 # Menu bar: hide the spotlight icon
 # Don't work on macOS 12.3
 # defaults write com.apple.systemuiserver dontAutoLoad -array \
-  # "/System/Library/CoreServices/Menu Extras/Spotlight.menu"
+# "/System/Library/CoreServices/Menu Extras/Spotlight.menu"
 
 # Menu bar: show the VPN, Volume icon
 defaults write com.apple.systemuiserver menuExtras -array \
@@ -182,6 +189,7 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 defaults write com.apple.Safari ShowFavoritesBar -bool false
 
 # Show the full URL in the address bar (note: this still hides the scheme)
+# Don't work on macOS 12.3. May from big sur?
 defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 
 # Prevent Safari from opening ‘safe’ files automatically after downloading
