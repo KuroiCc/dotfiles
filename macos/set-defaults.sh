@@ -30,13 +30,14 @@ defaults write "Apple Global Domain" AppleInterfaceStyle Dark
 #### Menu bar
 
 # Menu bar: show secondary time
-defaults write com.apple.menuextra.clock ShowSeconds -bool true
-defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5 EEE  H:mm"
+# Don't work on macOS 12.3
+# defaults write com.apple.menuextra.clock ShowSeconds -bool true
+# defaults write com.apple.menuextra.clock DateFormat -string "M\\U6708d\\U65e5 EEE  H:mm"
 
 # Menu bar: hide the spotlight icon
 # Don't work on macOS 12.3
-defaults write com.apple.systemuiserver dontAutoLoad -array \
-  "/System/Library/CoreServices/Menu Extras/Spotlight.menu"
+# defaults write com.apple.systemuiserver dontAutoLoad -array \
+  # "/System/Library/CoreServices/Menu Extras/Spotlight.menu"
 
 # Menu bar: show the VPN, Volume icon
 defaults write com.apple.systemuiserver menuExtras -array \
@@ -188,11 +189,11 @@ defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
 defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
 
 # Set up Safari for development.
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-defaults write com.apple.Safari IncludeDevelopMenu -bool true
-defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
-defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+# defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
+# defaults write com.apple.Safari IncludeDevelopMenu -bool true
+# defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
+# defaults write com.apple.Safari "com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled" -bool true
+# defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
 for app in "Activity Monitor" \
   "Address Book" \
