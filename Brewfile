@@ -20,7 +20,8 @@ cask "google-chrome"
 cask "visual-studio-code"
 cask "microsoft-remote-desktop"
 
-mas "Xcode", id: 497799835
+# You'd better install this manually
+# mas "Xcode", id: 497799835
 
 mas "Paste", id: 1554034946
 mas "Magnet", id: 441258766
