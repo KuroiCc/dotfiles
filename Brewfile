@@ -18,7 +18,7 @@ cask "adobe-acrobat-pro"
 cask "docker", args: { appdir: "/Applications" }
 cask "google-chrome"
 cask "visual-studio-code"
-cask "microsoft-remote-desktop"
+# cask "microsoft-remote-desktop"
 
 # You'd better install this manually
 # mas "Xcode", id: 497799835
