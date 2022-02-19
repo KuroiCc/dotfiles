@@ -122,8 +122,8 @@ link_file () {
   then
     if [ $2 == "/etc/hosts" ]
     then
-      info "make link to $2"
-      sudo ln -s "$src" "$dst"
+      info "copy hosts to $2"
+      sudo cp "$src" "$dst"
     else
       ln -s "$1" "$2"
     fi
@@ -141,7 +141,7 @@ install_dotfiles () {
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
-  # link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
+  link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
 }
 
 setup_gitconfig
