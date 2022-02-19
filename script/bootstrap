@@ -53,6 +53,11 @@ setup_gitconfig () {
 link_file () {
   local src=$1 dst=$2
 
+if [ $src == "${HOME}/.dotfiles/system/hosts.symlink" ]
+then
+  local dst="/etc/hosts"
+fi
+
   local overwrite= backup= skip=
   local action=
 
@@ -122,8 +127,8 @@ link_file () {
   then
     if [ $src == "${HOME}/.dotfiles/system/hosts.symlink" ]
     then
-      info "copy $src to /etc/hosts"
-      sudo cp "$src" "/etc/hosts"
+      info "copy $src to $dst"
+      sudo cp "$src" "$dst"
     else
       ln -s "$1" "$2"
     fi
