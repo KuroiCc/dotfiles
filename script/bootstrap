@@ -120,7 +120,7 @@ link_file () {
 
   if [ "$skip" != "true" ]  # "false" or empty
   then
-    if [ $src == "${HOME}/.dotfiles/git/gitignore.symlink" ]
+    if [ $src == "${HOME}/.dotfiles/system/hosts.symlink" ]
     then
       info "copy $src to /etc/hosts"
       sudo cp "$src" "/etc/hosts"
