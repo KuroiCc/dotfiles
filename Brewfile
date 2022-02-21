@@ -5,6 +5,8 @@ tap "yt-dlp/taps"
 brew "mas"
 brew "iperf3"
 brew "yt-dlp/taps/yt-dlp"
+brew "node@16"
+brew "yarn"
 
 cask "fliqlo"
 cask "bartender"
