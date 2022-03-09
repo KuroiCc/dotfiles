@@ -7,13 +7,16 @@ brew "iperf3"
 brew "yt-dlp/taps/yt-dlp"
 brew "node@16"
 brew "yarn"
+brew "tree"
 
 cask "fliqlo"
 cask "bartender"
 # cask "hiddenbar"
 cask "cheatsheet"
 cask "istat-menus"
-cask "background-music"
+# You need a Pre-release version of background-music
+# check https://github.com/kyleneideck/BackgroundMusic/releases
+# cask "background-music"
 
 cask "obs"
 cask "altserver"
