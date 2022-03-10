@@ -11,7 +11,6 @@ tap "yt-dlp/taps"
 
 # cask "fliqlo"
 # cask "bartender"
-# cask "hiddenbar"
 # cask "cheatsheet"
 # cask "istat-menus"
 # You need a Pre-release version of background-music
@@ -23,13 +22,13 @@ tap "yt-dlp/taps"
 # cask "adobe-acrobat-pro"
 # cask "docker", args: { appdir: "/Applications" }
 # cask "google-chrome"
+# cask "google-drive"
 cask "visual-studio-code"
 # cask "microsoft-remote-desktop"
 
 # You'd better install this manually
 # mas "Xcode", id: 497799835
 
-# mas "Paste", id: 1554034946
 # mas "Magnet", id: 441258766
 # mas "新建文件菜单", id: 1064959555
 # mas "Cleaner", id:1597938160
