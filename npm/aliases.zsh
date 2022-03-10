@@ -1,2 +1,2 @@
-alias react='npx create-react-app'
-alias react-ts='npx create-react-app --template typescript'
+alias react='yarn create react-app'
+alias react-ts='yarn create react-app --template typescript'
