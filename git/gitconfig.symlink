@@ -3,3 +3,4 @@
         path = ~/.gitconfig.local
 [core]
         excludesfile = ~/.gitignore
+        editor = code -w
