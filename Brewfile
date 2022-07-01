@@ -5,13 +5,15 @@ tap "yt-dlp/taps"
 brew "mas"
 brew "iperf3"
 brew "yt-dlp/taps/yt-dlp"
-brew "node@16"
+# brew "node@16"
+brew "volta"
 brew "yarn"
 brew "tree"
+brew "poetry"
 
 cask "fliqlo"
 cask "bartender"
-cask "cheatsheet"
+# cask "cheatsheet"
 cask "istat-menus"
 # You need a Pre-release version of background-music
 # check https://github.com/kyleneideck/BackgroundMusic/releases
@@ -23,8 +25,8 @@ cask "adobe-acrobat-pro"
 cask "docker", args: { appdir: "/Applications" }
 cask "google-chrome"
 # cask "google-drive"
+cask "homebrew/cask-drivers/synology-drive"
 cask "visual-studio-code"
-# cask "microsoft-remote-desktop"
 
 # You'd better install this manually
 # mas "Xcode", id: 497799835
@@ -37,6 +39,7 @@ mas "Slack", id: 803453959
 mas "Spark", id: 1176895641
 mas "Craft", id: 1487937127
 
+# mas "Microsoft Remote Desktop", id: 1295203466
 mas "Microsoft Word", id: 462054704
 mas "Microsoft Excel", id: 462058435
 mas "Microsoft OneNote", id: 784801555
