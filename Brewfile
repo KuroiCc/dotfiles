@@ -27,6 +27,7 @@ cask "google-chrome"
 # cask "google-drive"
 cask "homebrew/cask-drivers/synology-drive"
 cask "visual-studio-code"
+cask "fig"
 
 # You'd better install this manually
 # mas "Xcode", id: 497799835
