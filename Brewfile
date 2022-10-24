@@ -9,6 +9,7 @@ brew "iperf3"
 brew "volta"
 brew "yarn"
 brew "tree"
+brew "pyenv"
 brew "poetry"
 
 cask "fliqlo"
