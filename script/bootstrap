@@ -53,11 +53,6 @@ setup_gitconfig () {
 link_file () {
   local src=$1 dst=$2
 
-if [ $src == "${HOME}/.dotfiles/system/hosts.symlink" ]
-then
-  local dst="/etc/hosts"
-fi
-
   local overwrite= backup= skip=
   local action=
 
@@ -107,13 +102,13 @@ fi
 
     if [ "$overwrite" == "true" ]
     then
-      sudo rm -rf "$dst"
+      rm -rf "$dst"
       success "removed $dst"
     fi
 
     if [ "$backup" == "true" ]
     then
-      sudo mv "$dst" "${dst}.backup"
+      mv "$dst" "${dst}.backup"
       success "moved $dst to ${dst}.backup"
     fi
 
@@ -125,13 +120,7 @@ fi
 
   if [ "$skip" != "true" ]  # "false" or empty
   then
-    if [ $src == "${HOME}/.dotfiles/system/hosts.symlink" ]
-    then
-      info "copy $src to $dst"
-      sudo cp "$src" "$dst"
-    else
-      ln -s "$1" "$2"
-    fi
+    ln -s "$1" "$2"
     success "linked $1 to $2"
   fi
 }
@@ -146,7 +135,6 @@ install_dotfiles () {
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
   done
-  # link_file $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name 'hosts.symlink' -not -path '*.git*') "/etc/hosts"
 }
 
 setup_gitconfig
