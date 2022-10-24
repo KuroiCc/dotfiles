@@ -1,10 +1,10 @@
 tap "homebrew/bundle"
 tap "homebrew/cask"
-tap "yt-dlp/taps"
+# tap "yt-dlp/taps"
 
 brew "mas"
 brew "iperf3"
-brew "yt-dlp/taps/yt-dlp"
+# brew "yt-dlp/taps/yt-dlp"
 # brew "node@16"
 brew "volta"
 brew "yarn"
@@ -32,6 +32,7 @@ cask "fig"
 # You'd better install this manually
 # mas "Xcode", id: 497799835
 
+mas "FastZip", id: 1565629813
 mas "Magnet", id: 441258766
 mas "新建文件菜单", id: 1064959555
 mas "Cleaner", id:1597938160
