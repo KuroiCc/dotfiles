@@ -3,5 +3,11 @@
         "zsh",
         "git",
         "vscode"
+    ],
+    "cSpell.words": [
+        "autoload",
+        "bindkey",
+        "compinit",
+        "DOTFILES"
     ]
 }
