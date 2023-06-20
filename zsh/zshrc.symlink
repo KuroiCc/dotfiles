@@ -6,9 +6,9 @@ export DOTFILES=$HOME/.dotfiles
 
 # your project folder that we can `c [tab]` to
 if test $(uname) = "Darwin"; then
-  export PROJECTS="${HOME}/important/git-repositorys"
+  export PROJECTS="${HOME}/important/git-repositories"
 else
-  export PROJECTS="${HOME}/git-repositorys"
+  export PROJECTS="${HOME}/git-repositories"
 fi
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
