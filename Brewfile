@@ -12,6 +12,7 @@ brew "tree"
 brew "pyenv"
 brew "poetry"
 brew "swift-format"
+brew "rustup-init"
 
 cask "fliqlo"
 cask "bartender"
