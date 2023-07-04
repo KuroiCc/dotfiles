@@ -10,8 +10,9 @@ The main change is following:
     - CLI tools by Homebrew
     - GUI tools by Homebrew Cask
     - App Store apps by mas-cli
-  - symlink hosts file 
   - fix some errors that happened in my environment
+  - using user-app directory to manage non-critical apps
+  - symlink hosts file (DEPRECATED)
 
 ## Getting Started
 1. Install Xcode
