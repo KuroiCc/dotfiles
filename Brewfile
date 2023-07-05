@@ -1,5 +1,5 @@
 tap "homebrew/bundle"
-tap "homebrew/cask"
+# tap "homebrew/cask"
 # tap "yt-dlp/taps"
 
 brew "mas"
