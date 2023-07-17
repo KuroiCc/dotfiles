@@ -28,7 +28,7 @@ cask "altserver"
 cask "docker", args: { appdir: "/Applications" }
 cask "google-chrome"
 # cask "google-drive"
-cask "homebrew/cask-drivers/synology-drive"
+cask "synology-drive"
 cask "visual-studio-code"
 cask "fig"
 cask "rectangle"
