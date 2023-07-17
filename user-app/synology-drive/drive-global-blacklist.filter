@@ -3,16 +3,18 @@ major = 1
 minor = 1
 
 [Common]
+black_char = ":*?\"<>|\\/"
 black_dir_prefix = "/\xe6\x88\x90 \xe3\x81\x95\xe3\x82\x93\xe3\x81\xae\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x88\xe3\x83\x96\xe3\x83\x83\xe3\x82\xaf"
+black_name = "@tmp", "@eaDir", ".SynologyWorkingDirectory", "#recycle", "desktop.ini", ".ds_store", "Icon\r", "thumbs.db", "$Recycle.Bin", "@sharebin", "System Volume Information", "Program Files", "Program Files (x86)", "ProgramData", "#snapshot"
 max_length = 0
 max_path = 0
 
 [File]
-black_name = "\xe6\x88\x90 \xe3\x81\x95\xe3\x82\x93\xe3\x81\xae\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x88\xe3\x83\x96\xe3\x83\x83\xe3\x82\xaf.url", ".DS_Store"
+black_name = "\xe6\x88\x90 \xe3\x81\x95\xe3\x82\x93\xe3\x81\xae\xe3\x83\x8e\xe3\x83\xbc\xe3\x83\x88\xe3\x83\x96\xe3\x83\x83\xe3\x82\xaf.url", "@tmp", "@eaDir", ".SynologyWorkingDirectory", "#recycle", "desktop.ini", ".ds_store", "Icon\r", "thumbs.db", "$Recycle.Bin", "@sharebin", "tmp", "temp", "System Volume Information", "Program Files", "Program Files (x86)", "ProgramData", "#snapshot"
 max_size = 0
 
 [Directory]
-black_name = ".cache", ".node-gyp", "bower_components", "node_modules", ".next", "__pycache__"
+black_name = "@tmp", "@eaDir", ".SynologyWorkingDirectory", "#recycle", "desktop.ini", ".ds_store", "Icon\r", "thumbs.db", "$Recycle.Bin", "@sharebin", "System Volume Information", "Program Files", "Program Files (x86)", "ProgramData", "#snapshot", ".cache", ".node-gyp", "bower_components", "node_modules", ".next", "__pycache__", ".venv"
 
 [EA]
 
