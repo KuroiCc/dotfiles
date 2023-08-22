@@ -10,5 +10,7 @@ cd "$(dirname $0)"/..
 find . -name install.sh | while read installer; do sh -c "${installer}"; done
 
 # Run Homebrew through the Brewfile
-echo "› brew bundle"
-brew bundle
+if test "$(uname)" = "Darwin"; then
+    echo "› brew bundle"
+    brew bundle
+fi
