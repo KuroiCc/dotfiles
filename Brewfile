@@ -4,14 +4,12 @@ tap "homebrew/bundle"
 
 brew "mas"
 brew "iperf3"
-# brew "yt-dlp/taps/yt-dlp"
-# brew "node@16"
-# brew "yarn"
-brew "volta"
 brew "tree"
+brew "swift-format"
+
+brew "volta"
 brew "pyenv"
 brew "poetry"
-brew "swift-format"
 brew "rustup-init"
 
 cask "fliqlo"
@@ -38,7 +36,7 @@ cask "rectangle"
 
 mas "FastZip", id: 1565629813
 # mas "Magnet", id: 441258766
-mas "新建文件菜单", id: 1064959555
+# mas "新建文件菜单", id: 1064959555
 mas "Cleaner", id:1597938160
 
 mas "Slack", id: 803453959
