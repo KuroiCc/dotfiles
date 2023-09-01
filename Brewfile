@@ -11,6 +11,8 @@ brew "volta"
 brew "pyenv"
 brew "poetry"
 brew "rustup-init"
+brew "rbenv"
+brew "ruby-build"
 
 cask "fliqlo"
 cask "bartender"
