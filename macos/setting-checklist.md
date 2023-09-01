@@ -4,3 +4,4 @@
 - [ ] safari 高级 -> 默认编码 -> Unicode (UTF-8)
 - [ ] safari 通用 -> 下载删除时间
 - [ ] safari 通用 -> 不打开安全文件
+- [ ] defaults write com.apple.screencapture disable-shadow -bool false
