@@ -80,6 +80,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
   git
   zsh-wakatime
+  poetry
 )
 
 source $ZSH/oh-my-zsh.sh
