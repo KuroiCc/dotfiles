@@ -11,6 +11,7 @@ brew "volta"
 brew "pyenv"
 brew "poetry"
 brew "rustup-init"
+brew "kubectl"
 # brew "rbenv"
 # brew "ruby-build"
 
