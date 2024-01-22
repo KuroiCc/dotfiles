@@ -3,7 +3,7 @@
 # 尤其是 option + shift + f 会输入的问题
 
 if test ! "$(uname)" = "Darwin"; then
-    exit 0
+    return
 fi
 
 file_name="DisableOptionSpecialCharacter.keylayout"

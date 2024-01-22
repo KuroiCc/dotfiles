@@ -1,5 +1,5 @@
 if test ! "$(uname)" = "Darwin"; then
-    exit 0
+    return
 fi
 
 if [ -d ~/Library/Application\ Support/SynologyDrive/data/session ]; then
