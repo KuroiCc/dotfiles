@@ -12,6 +12,7 @@ brew "pyenv"
 brew "poetry"
 brew "rustup-init"
 brew "kubectl"
+brew "kompose"
 # brew "rbenv"
 # brew "ruby-build"
 
