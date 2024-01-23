@@ -1,13 +1,7 @@
 {
-    "conventionalCommits.scopes": [
-        "zsh",
-        "git",
-        "vscode"
-    ],
-    "cSpell.words": [
-        "autoload",
-        "bindkey",
-        "compinit",
-        "DOTFILES"
-    ]
+  "conventionalCommits.scopes": ["zsh", "git", "vscode"],
+  "cSpell.words": ["autoload", "bindkey", "compinit", "DOTFILES"],
+  "files.associations": {
+    "*.symlink": "shellscript"
+  }
 }
