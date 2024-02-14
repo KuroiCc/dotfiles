@@ -10,6 +10,14 @@ file_name="DisableOptionSpecialCharacter.keylayout"
 
 target_paths=("/Library/Keyboard Layouts" "$HOME/Library/Keyboard Layouts")
 
+# 判断target_paths目录的owner是否是chengchen
+for f_path in "${target_paths[@]}"; do
+    if test -d "$f_path" && test ! "$(stat -f %Su $f_path)" = "chengchen"; then
+        echo "Change $f_path owner to chengchen"
+        sudo chown -R chengchen "$f_path"
+    fi
+done
+
 # 使用 for 循环遍历数组
 for f_path in "${target_paths[@]}"; do
     f_path="$f_path/$file_name"
