@@ -25,4 +25,4 @@ git clone https://github.com/KuroiCc/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 script/bootstrap
 ```
-3. Follow the [checklist]() to finish the setting.
+3. Follow the [checklist](macos/setting-checklist.md) to finish the setting.
