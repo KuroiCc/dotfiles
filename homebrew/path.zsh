@@ -8,7 +8,3 @@ if test "$(uname)" = "Darwin"; then
         eval "$(/usr/local/bin/brew shellenv)"
     fi
 fi
-
-if test "$(uname)" = "Linux"; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
