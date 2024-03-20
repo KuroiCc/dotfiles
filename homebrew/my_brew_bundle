@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ "$*" == *"--file"* ]]; then
+    brew bundle "$@"
+else
+    cat $DOTFILES/Brewfile.core $DOTFILES/Brewfile.local >Brewfile 2>/dev/null
+    brew bundle --file Brewfile "$@"
+    rm Brewfile
+fi

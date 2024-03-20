@@ -1,0 +1,23 @@
+tap "homebrew/bundle"
+
+# CLI tools
+brew "mas"
+brew "iperf3"
+brew "tree"
+
+# Development tools
+brew "pyenv"
+brew "poetry"
+
+# Development apps
+cask "synology-drive"
+cask "visual-studio-code"
+cask "fig"
+
+# System tools
+cask "bartender"
+cask "istat-menus"
+cask "rectangle"
+
+# Apps
+mas "Craft", id: 1487937127

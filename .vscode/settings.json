@@ -3,6 +3,6 @@
   "cSpell.words": ["autoload", "bindkey", "compinit", "DOTFILES"],
   "files.associations": {
     "*.symlink": "shellscript",
-    "Brewfile": "shellscript"
+    "Brewfile.*": "shellscript"
   }
 }

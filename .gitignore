@@ -4,6 +4,7 @@ git/gitconfig.local.symlink
 
 /zsh/zshrc.symlink.bk
 /script/test
+/Brewfile.local
 /Brewfile.lock.json
 
 # FOR WORK

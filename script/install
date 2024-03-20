@@ -15,5 +15,6 @@ done
 # Run Homebrew through the Brewfile
 if test "$(uname)" = "Darwin"; then
     echo "› brew bundle"
-    brew bundle
+    # brew bundle
+    $DOTFILES/homebrew/my_brew_bundle
 fi
