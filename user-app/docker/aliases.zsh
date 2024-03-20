@@ -1,1 +1,2 @@
-alias dockerc="docker-compose"
+alias dk="docker"
+alias dkc="docker-compose"
