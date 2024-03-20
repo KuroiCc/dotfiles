@@ -5,3 +5,8 @@ git/gitconfig.local.symlink
 /zsh/zshrc.symlink.bk
 /script/test
 /Brewfile.lock.json
+
+# FOR WORK
+/user-app/google-cloud-sdk
+/user-app/nodebrew
+/user-app/rancher
