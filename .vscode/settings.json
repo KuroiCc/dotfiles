@@ -1,6 +1,12 @@
 {
   "conventionalCommits.scopes": ["zsh", "git", "vscode"],
-  "cSpell.words": ["autoload", "bindkey", "compinit", "DOTFILES"],
+  "cSpell.words": [
+    "autoload",
+    "bindkey",
+    "compinit",
+    "DOTFILES",
+    "wakatime"
+  ],
   "files.associations": {
     "*.symlink": "shellscript",
     "Brewfile.*": "shellscript"

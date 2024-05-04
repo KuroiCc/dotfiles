@@ -1,6 +1,7 @@
 git/gitconfig.local.symlink
 /macos/os-setting.env.sh
 /macos/tmp
+/user-app/wakatime/.wakatime_api_key
 
 /zsh/zshrc.symlink.bk
 /script/test
@@ -11,3 +12,5 @@ git/gitconfig.local.symlink
 /user-app/google-cloud-sdk
 /user-app/nodebrew
 /user-app/rancher
+/bin/dbup
+/bin/gglogin
