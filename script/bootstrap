@@ -49,6 +49,19 @@ setup_gitconfig () {
   fi
 }
 
+setup_wakatime () {
+  if ! [ -f user-app/wakatime/.wakatime_api_key ]
+  then
+    info 'setup wakatime'
+
+    user ' - What is your wakatime api key?, you can get it from https://wakatime.com/settings/api-key'
+    read -e wakatime_apikey
+
+    echo $wakatime_apikey > user-app/wakatime/.wakatime_api_key
+
+    success 'wakatime'
+  fi
+}
 
 link_file () {
   local src=$1 dst=$2
@@ -138,6 +151,7 @@ install_dotfiles () {
 }
 
 setup_gitconfig
+setup_wakatime
 install_dotfiles
 
 # If we're on a Mac, let's install and setup homebrew.
