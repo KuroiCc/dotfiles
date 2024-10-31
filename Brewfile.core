@@ -12,7 +12,7 @@ brew "poetry"
 # Development apps
 cask "synology-drive"
 cask "visual-studio-code"
-cask "fig"
+cask "amazon-q"
 
 # System tools
 cask "bartender"
