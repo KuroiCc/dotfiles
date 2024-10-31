@@ -12,5 +12,10 @@ git/gitconfig.local.symlink
 /user-app/google-cloud-sdk
 /user-app/nodebrew
 /user-app/rancher
+/user-app/npm/npm-global
 /bin/dbup
 /bin/gglogin
+/bin/feup
+/bin/feci
+/bin/center-up
+/bin/center-ci
