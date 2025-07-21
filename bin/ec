@@ -2,4 +2,4 @@
 #
 # Quick shortcut to an editor.
 #
-exec idea "${1:-.}" >/dev/null 2>&1 &
+exec cursor "${1:-.}"
