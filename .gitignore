@@ -13,6 +13,9 @@ git/gitconfig.local.symlink
 /user-app/nodebrew
 /user-app/rancher
 /user-app/npm/npm-global
+/user-app/postgresql
+/user-app/aws
+/user-app/claude-code
 /bin/dbup
 /bin/gglogin
 /bin/feup
