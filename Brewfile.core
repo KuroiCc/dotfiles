@@ -13,6 +13,7 @@ brew "poetry"
 cask "synology-drive"
 cask "visual-studio-code"
 cask "amazon-q"
+cask "cursor"
 
 # System tools
 cask "bartender"
