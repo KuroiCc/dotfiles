@@ -16,9 +16,11 @@ git/gitconfig.local.symlink
 /user-app/postgresql
 /user-app/aws
 /user-app/claude-code
+/user-app/work-aliases.zsh
+/user-app/aqua
 /bin/dbup
-/bin/gglogin
 /bin/feup
 /bin/feci
 /bin/center-up
 /bin/center-ci
+/bin/t
