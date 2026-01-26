@@ -14,7 +14,7 @@ cask "synology-drive"
 cask "visual-studio-code"
 cask "amazon-q"
 cask "cursor"
-brew "codex"
+cask "codex"
 
 # System tools
 cask "bartender"
