@@ -1,1 +1,1 @@
-alias docker-ff-gif="$PROJECTS/presonal/docker-ffmpeg-gif/src/script.sh"
+alias docker-ff-gif="$PROJECTS/personal/docker-ffmpeg-gif/src/script.sh"
