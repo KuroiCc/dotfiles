@@ -15,7 +15,6 @@ git/gitconfig.local.symlink
 /user-app/npm/npm-global
 /user-app/postgresql
 /user-app/aws
-/user-app/claude-code
 /user-app/work-aliases.zsh
 /user-app/aqua
 /bin/dbup
@@ -24,3 +23,4 @@ git/gitconfig.local.symlink
 /bin/center-up
 /bin/center-ci
 /bin/t
+/bin/ffmpeg
