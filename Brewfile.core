@@ -22,5 +22,3 @@ cask "istat-menus"
 cask "rectangle"
 
 # Apps
-mas "Craft", id: 1487937127
-cask "chatgpt"
