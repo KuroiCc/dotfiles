@@ -4,6 +4,7 @@ tap "homebrew/bundle"
 brew "mas"
 brew "iperf3"
 brew "tree"
+brew "fzf"
 
 # Development tools
 brew "pyenv"

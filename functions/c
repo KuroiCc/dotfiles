@@ -1,16 +1,35 @@
 #!/bin/zsh
 #
-# This lets you quickly jump into a project directory.
+# Quickly jump into a project directory under $PROJECTS.
 #
-# Type:
+# Usage:
+#   c <name>   Jump directly to $PROJECTS/<name> (e.g. `c holman/dotfiles`).
+#   c          With no argument, fuzzy-pick a project with fzf.
 #
-#   c <tab>
-#
-# ...to autocomplete on all of your projects in the directories specified in
-# `functions/_c`. Typically I'm using it like:
-#
-#    c holm<tab>/bo<tab>
-#
-# ...to quickly jump into holman/boom, for example.
+# The interactive picker exists because Warp does not load zsh's compsys, so
+# the `c <tab>` completion defined in `functions/_c` does not work there.
+# Running `c` and selecting via fzf works in any terminal, Warp included.
 
-cd "$PROJECTS/$1"
+# With an argument: behave like before and jump straight there.
+if [[ -n "$1" ]]; then
+  cd "$PROJECTS/$1"
+  return
+fi
+
+# No argument: fuzzy-select a directory under $PROJECTS.
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "c: fzf is not installed. Run: brew install fzf" >&2
+  return 1
+fi
+
+local selected
+selected=$(
+  cd "$PROJECTS" && \
+  find . -mindepth 1 -maxdepth 5 \
+    \( -name '.*' -o -name node_modules \) -prune -o \
+    -type d -print 2>/dev/null \
+  | sed 's|^\./||' \
+  | fzf --prompt="project> " --height=40% --reverse
+) || return
+
+[[ -n "$selected" ]] && cd "$PROJECTS/$selected"
