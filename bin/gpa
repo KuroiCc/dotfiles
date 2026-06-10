@@ -1,0 +1,139 @@
+#!/bin/bash
+
+# pull-all: take a directory as input and treat every immediate subdirectory
+# as a git repository: cd into it, `git fetch` then `git pull`.
+#
+# Prints colored progress while running and a summary at the end:
+# how many succeeded, which ones, which failed, and the failure log.
+#
+# Usage:
+#   pull-all [DIR]      # DIR defaults to the current directory
+#
+# Portable to macOS' stock bash 3.2 (no associative arrays).
+
+set -u
+
+# --- colors (disabled when stdout is not a tty) ---------------------------
+if [ -t 1 ]; then
+  # Use ANSI-C quoting so the variables hold real ESC bytes; this makes them
+  # work both in printf format strings and inside sed replacement strings.
+  C_RESET=$'\033[0m'
+  C_BOLD=$'\033[1m'
+  C_GREEN=$'\033[32m'
+  C_RED=$'\033[31m'
+  C_YELLOW=$'\033[33m'
+  C_BLUE=$'\033[34m'
+  C_DIM=$'\033[2m'
+else
+  C_RESET='' C_BOLD='' C_GREEN='' C_RED='' C_YELLOW='' C_BLUE='' C_DIM=''
+fi
+
+# --- resolve target directory ---------------------------------------------
+ROOT="${1:-.}"
+
+if [ ! -d "$ROOT" ]; then
+  printf "${C_RED}Error:${C_RESET} '%s' is not a directory.\n" "$ROOT" >&2
+  exit 1
+fi
+
+# absolute path for clean output
+ROOT="$(cd "$ROOT" && pwd)"
+
+printf "${C_BOLD}${C_BLUE}Scanning${C_RESET} %s\n" "$ROOT"
+
+# --- collect immediate subdirectories that are git repositories ------------
+repos=()
+while IFS= read -r dir; do
+  if [ -d "$dir/.git" ] || (cd "$dir" && git rev-parse --git-dir >/dev/null 2>&1); then
+    repos+=("$dir")
+  fi
+done < <(find "$ROOT" -mindepth 1 -maxdepth 1 -type d | sort)
+
+total="${#repos[@]}"
+
+if [ "$total" -eq 0 ]; then
+  printf "${C_YELLOW}No git repositories found under${C_RESET} %s\n" "$ROOT"
+  exit 0
+fi
+
+printf "${C_DIM}Found %d git repositor%s.${C_RESET}\n" "$total" \
+  "$([ "$total" -eq 1 ] && echo y || echo ies)"
+
+# temp dir to stash failure logs (keyed by index), cleaned up on exit
+TMPDIR_LOGS="$(mktemp -d "${TMPDIR:-/tmp}/pull-all.XXXXXX")"
+trap 'rm -rf "$TMPDIR_LOGS"' EXIT
+
+# --- process each repository -----------------------------------------------
+ok_names=()
+failed_names=()
+failed_idxs=()
+
+idx=0
+for dir in "${repos[@]}"; do
+  name="$(basename "$dir")"
+
+  printf "\n${C_BOLD}${C_BLUE}[%d/%d]${C_RESET} %s\n" "$((idx + 1))" "$total" "$name"
+
+  # capture combined output so we can show it on failure
+  output="$(
+    cd "$dir" && {
+      printf '$ git fetch --all --prune\n'
+      git fetch --all --prune 2>&1 && \
+      printf '$ git pull --ff-only\n' && \
+      git pull --ff-only 2>&1
+    }
+  )"
+  status=$?
+
+  # show indented output for context
+  printf '%s\n' "$output" | sed "s/^/  ${C_DIM}|${C_RESET} /"
+
+  if [ "$status" -eq 0 ]; then
+    printf "  ${C_GREEN}✓ ok${C_RESET}\n"
+    ok_names+=("$name")
+  else
+    printf "  ${C_RED}✗ failed (exit %d)${C_RESET}\n" "$status"
+    failed_names+=("$name")
+    failed_idxs+=("$idx")
+    printf '%s\n' "$output" > "$TMPDIR_LOGS/$idx.log"
+  fi
+
+  idx=$((idx + 1))
+done
+
+ok_count="${#ok_names[@]}"
+fail_count="${#failed_names[@]}"
+
+# --- summary ----------------------------------------------------------------
+printf "\n${C_BOLD}===================================================================${C_RESET}\n"
+printf "${C_BOLD} Summary${C_RESET}  (%d ok / %d failed / %d total)\n" \
+  "$ok_count" "$fail_count" "$total"
+printf "${C_BOLD}===================================================================${C_RESET}\n"
+
+idx=0
+for dir in "${repos[@]}"; do
+  name="$(basename "$dir")"
+  is_failed=0
+  for fi in "${failed_idxs[@]:-}"; do
+    [ "$fi" = "$idx" ] && is_failed=1 && break
+  done
+  if [ "$is_failed" -eq 1 ]; then
+    printf "  ${C_RED}FAIL${C_RESET}  %s\n" "$name"
+  else
+    printf "  ${C_GREEN}ok  ${C_RESET}  %s\n" "$name"
+  fi
+  idx=$((idx + 1))
+done
+
+# --- failure details --------------------------------------------------------
+if [ "$fail_count" -gt 0 ]; then
+  printf "\n${C_BOLD}${C_RED}Failure details:${C_RESET}\n"
+  for fi in "${failed_idxs[@]}"; do
+    name="$(basename "${repos[$fi]}")"
+    printf "\n${C_RED}--- %s ---${C_RESET}\n" "$name"
+    sed 's/^/  /' "$TMPDIR_LOGS/$fi.log"
+  done
+  exit 1
+fi
+
+printf "\n${C_GREEN}All %d repositories updated successfully.${C_RESET}\n" "$total"
