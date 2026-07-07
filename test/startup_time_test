@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+# Step 8: overall acceptance — with a warm completion dump, interactive
+# startup must finish well below the ~2.5s it took before the compinit fix.
+emulate -L zsh
+set -u
+zmodload zsh/datetime
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+zd=$(make_zdotdir)
+trap 'rm -rf "$zd"' EXIT
+
+# first startup builds the dump; not part of the measurement
+run_interactive "$zd" 'exit' >/dev/null
+
+typeset -a times
+typeset -F t0 t1
+typeset -i i
+for i in {1..5}; do
+  t0=$EPOCHREALTIME
+  run_interactive "$zd" 'exit' >/dev/null
+  t1=$EPOCHREALTIME
+  times+=($(( (t1 - t0) * 1000 )))
+done
+
+typeset -a sorted
+sorted=(${(on)times})
+typeset median=${sorted[3]}
+print -r -- "  startup times (ms): ${(j:, :)${(@)times%%.*}} — median ${median%%.*}"
+
+assert_lt "${median%%.*}" 900 \
+  "should start interactive shell within 900 ms at median of 5 runs"
