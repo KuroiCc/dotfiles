@@ -5,6 +5,8 @@ git/gitconfig.local.symlink
 
 /zsh/zshrc.symlink.bk
 /script/test
+# machine-specific test snapshots
+/test/snapshots
 /Brewfile.local
 /Brewfile.lock.json
 

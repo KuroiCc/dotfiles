@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+# Dump a deterministic snapshot of the interactive environment produced by
+# this repo's zshrc: PATH, aliases, function names, fpath (as a sorted set),
+# completion mappings and enabled options.
+#
+# Usage: zsh test/helpers/snapshot-env <output-file>
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+typeset out=${1:?usage: snapshot-env <output-file>}
+
+typeset dump_cmd='
+zmodload zsh/parameter
+print -r -- "## PATH"
+print -r -- "$PATH"
+print -r -- "## aliases"
+for k in ${(ok)aliases}; do print -r -- "$k=${aliases[$k]}"; done
+print -r -- "## functions"
+print -l -- ${(ok)functions}
+print -r -- "## fpath-set"
+print -l -- ${(o)${(u)fpath}}
+print -r -- "## comps"
+for k in ${(ok)_comps}; do print -r -- "$k=${_comps[$k]}"; done
+print -r -- "## options-on"
+print -l -- ${(ok)options[(R)on]}
+'
+
+typeset zd
+zd=$(make_zdotdir)
+trap 'rm -rf "$zd"' EXIT
+
+run_interactive "$zd" "$dump_cmd" > "$out"
+print -r -- "snapshot written: $out ($(wc -l < "$out" | tr -d ' ') lines)"

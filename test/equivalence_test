@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+# Step 2: characterization safety net — the interactive environment
+# (PATH / aliases / functions / fpath / completion mappings / options)
+# must stay identical to the baseline captured before the optimization work.
+#
+# On first run (no baseline yet) the current snapshot becomes the baseline.
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+typeset baseline="$REPO_ROOT/test/snapshots/baseline.txt"
+mkdir -p "$REPO_ROOT/test/snapshots"
+
+typeset current
+current=$(mktemp "${TMPDIR:-/tmp}/dotfiles-snap.XXXXXX")
+trap 'rm -f "$current"' EXIT
+zsh "$REPO_ROOT/test/helpers/snapshot-env" "$current" >/dev/null
+
+if [[ ! -f $baseline ]]; then
+  cp "$current" "$baseline"
+  pass "baseline snapshot created; re-run to compare — should preserve interactive environment snapshot against baseline"
+  exit 0
+fi
+
+typeset diff_out
+if diff_out=$(diff -u "$baseline" "$current"); then
+  pass "should preserve interactive environment snapshot against baseline"
+else
+  print -ru2 -- "$diff_out"
+  fail "should preserve interactive environment snapshot against baseline — differs from baseline (diff above)"
+fi
