@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+# Run every test/*_test; exit non-zero if any of them fails.
+#
+# Test files intentionally do NOT end in .zsh: zshrc.symlink sources every
+# *.zsh under $DOTFILES at startup, so a test named *.zsh would be executed
+# by every new shell (and recurse when the test itself starts a shell).
+emulate -L zsh
+set -u
+
+typeset dir=${0:A:h}
+typeset -i failed=0
+typeset t
+for t in $dir/*_test(N); do
+  print -r -- "== ${t:t}"
+  if zsh "$t"; then
+    print -r -- "== PASS ${t:t}"
+  else
+    print -r -- "== FAIL ${t:t}"
+    failed=1
+  fi
+done
+
+if (( failed )); then
+  print -r -- "RESULT: FAIL"
+  exit 1
+fi
+print -r -- "RESULT: ALL PASS"

@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+# Step 1: zshrc must honour a preset DOTFILES so tests can target this repo.
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+zd=$(make_zdotdir)
+trap 'rm -rf "$zd"' EXIT
+
+actual=$(run_interactive "$zd" 'print -r -- $DOTFILES' | tail -1)
+assert_eq "$actual" "$REPO_ROOT" \
+  "should load zshrc from the repo under test when DOTFILES is preset"
