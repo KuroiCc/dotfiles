@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+# Step 6: acceptance for the whole compinit fix — once the dump has been
+# written by the first startup, later startups must reuse it as-is (the old
+# setup rewrote it on every startup because two compinit calls with different
+# fpath views kept invalidating each other's dump).
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+zd=$(make_zdotdir)
+trap 'rm -rf "$zd"' EXIT
+
+run_interactive "$zd" 'exit' >/dev/null
+typeset before
+before=$(cd "$zd" && md5 -q .zcompdump*(N) | sort)
+[[ -n "$before" ]] || fail "first startup produced no completion dump in ZDOTDIR"
+
+run_interactive "$zd" 'exit' >/dev/null
+typeset after
+after=$(cd "$zd" && md5 -q .zcompdump*(N) | sort)
+
+assert_eq "$after" "$before" \
+  "should not rewrite completion dump on second consecutive startup"
+
+# compdump writes to <dump>.<host>.<pid> and renames; a leftover means an
+# interrupted rewrite (the legit dump name ends in the zsh version, e.g. 5.9)
+typeset -a leftovers
+leftovers=("$zd"/.zcompdump*."$HOST".<->(N))
+(( ${#leftovers} == 0 )) || \
+  fail "pid-suffixed dump leftovers found: ${leftovers[*]}"
+pass "should leave no pid-suffixed dump leftovers"
