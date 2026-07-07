@@ -4,7 +4,7 @@
 
 ## ゴール
 
-- 対話シェルの起動時間を **~2.5 秒 → 0.5〜0.7 秒** に短縮する。
+- 対話シェルの起動時間を **~2.5 秒 → 0.6〜0.8 秒** に短縮する。
 - 機能は変えない。挙動もできるだけ変えない(alias / 関数 / PATH / fpath / 補完登録は同値を維持)。
 
 ## 方針(Research の結論)
@@ -14,10 +14,10 @@
    - fpath 構築(topic dirs + `functions/`)を oh-my-zsh ロードより前(path フェーズ)へ移す。
    - `zsh/zshrc.symlink:45` の素の `compinit` を `(( $+functions[compdef] )) || compinit` ガードに置き換え、oh-my-zsh の compinit を唯一の実行点にする。
 2. `ZSH_DISABLE_COMPFIX=true` で `compaudit` をスキップ(~70 ms)。
-3. `$DOTFILES/**/*.zsh` の再帰 glob を深さ制限 glob + ソートに置き換える(~90 ms)。
-4. 実 HOME に散乱した古い `.zcompdump*` を一回限り掃除する(キャッシュ安定化)。
+   - 挙動差: insecure directory(fpath 上の group/world-writable なディレクトリ)が存在しない限り**完全に同一挙動**。実測で `compaudit` は現在何も検出していない(exit 0)。存在した場合のみ「警告表示+該当ディレクトリの補完スキップ(`compinit -i`)」→「警告なしで読み込み(`compinit -u`)」に変わる。独立コミットにするので単独 revert 可能。
+3. 実 HOME に散乱した古い `.zcompdump*` を一回限り掃除する(キャッシュ安定化)。
 
-見送り(挙動が変わるため今回やらない): pyenv の lazy 化、`brew shellenv` の静的化、`git/completion.zsh` 等のデッドコード修正。
+見送り(ユーザー判断・挙動リスクにより今回やらない): **`$DOTFILES/**/*.zsh` 再帰 glob の深さ制限化(~90 ms、ユーザー判断で見送り)**、pyenv の lazy 化、`brew shellenv` の静的化、`git/completion.zsh` 等のデッドコード修正。
 
 ## テスト基盤
 
@@ -39,7 +39,7 @@ test/
 
 - `user-app-work/` は gitignore 対象で worktree には存在しない。**実装とテスト実行は実 checkout(`~/.dotfiles`)上のブランチで行うこと**(compinit #1 は user-app-work 経由でしか再現しないため)。
 - サンドボックス実行では gitstatus の初期化エラーが stderr に出る。テストの assert は stderr のノイズを無視する。
-- 時間系テスト(Step 8-2, 9)は環境負荷でぶれるので、median を取り閾値に余裕を持たせる。
+- 時間系テスト(Step 8)は環境負荷でぶれるので、median を取り閾値に余裕を持たせる。
 
 ## TDD ステップ(各ステップが 1 回の Red→Green)
 
@@ -111,36 +111,17 @@ test/
 - テストファイル: `test/compaudit_test.zsh`
 - テスト名: `should not run compaudit during interactive startup`
 - Arrange: `zsh -x -i -c exit` のトレースを取得 / Act: `+compaudit:` 行を検索 / Assert: 出現 0 回(現状 6 回呼ばれているので Red)。
-- Green にする最小変更: `user-app/ohmyzsh/config.zsh` の `source $ZSH/oh-my-zsh.sh`(87 行目)の直前に `ZSH_DISABLE_COMPFIX=true` を追加(oh-my-zsh が `compinit -u` を使うようになる。single-user Mac のため insecure-directory 検査の省略に実害なし)。
+- Green にする最小変更: `user-app/ohmyzsh/config.zsh` の `source $ZSH/oh-my-zsh.sh`(87 行目)の直前に `ZSH_DISABLE_COMPFIX=true` を追加。
+- 挙動差の詳細: oh-my-zsh が `compaudit` 検査 + `compinit -i` の代わりに `compinit -u` を使うようになる。insecure directory(group/world-writable な fpath ディレクトリ)が存在しない限り挙動は完全に同一(実測で現在 `compaudit` は何も検出していない)。存在した場合のみ「警告+補完スキップ」→「警告なしで読み込み」に変わる。
 
-### Step 8: config_files glob の深さ制限化
-
-- 8a. テストファイル: `test/config_glob_test.zsh`
-  - テスト名: `should enumerate identical config files as recursive glob`
-  - Arrange: zsh スニペットで旧ロジック `($DOTFILES/**/*.zsh)` と新ロジックの結果を両方計算 / Act: 2 つの配列を比較 / Assert: 完全一致(順序含む)。※新ロジック実装前は新旧同一実装を比較することになるため、このテストは 8b と同時に導入して 8b を Red の駆動役にする。
-  - Green にする最小変更: `zsh/zshrc.symlink:28-29` を以下に置き換え:
-
-    ```zsh
-    typeset -U config_files
-    # depth-bounded glob: $DOTFILES/**/*.zsh traverses node_modules & co. (~90ms).
-    # All topic files live at depth 2-4; sort to keep the original load order.
-    config_files=($DOTFILES/*/*.zsh(N) $DOTFILES/*/*/*.zsh(N) $DOTFILES/*/*/*/*.zsh(N))
-    config_files=(${(o)config_files})
-    ```
-
-- 8b. テストファイル: `test/config_glob_test.zsh`(同ファイル)
-  - テスト名: `should enumerate config files in under 15 ms`
-  - Arrange: `zmodload zsh/datetime` で計測準備 / Act: 新ロジックの glob を実行し所要時間を計測 / Assert: 15 ms 未満(旧ロジックは実測 93 ms なので Red → Green)。
-  - 注意: 深さ 4 の `user-app/npm/npm-global/path.zsh` を落とさないこと(8a が守る)。深さ 5 以深にファイルを置く運用は今後不可になる旨をコメントで明記。
-
-### Step 9: 起動時間の回帰テスト(全体の受け入れ)
+### Step 8: 起動時間の回帰テスト(全体の受け入れ)
 
 - テストファイル: `test/startup_time_test.zsh`
 - テスト名: `should start interactive shell within 900 ms at median of 5 runs`
-- Arrange: 隔離 ZDOTDIR で 1 回ウォームアップ起動(dump 生成)/ Act: `zsh -i -c exit` を 5 回計測し median を取る / Assert: 900 ms 未満(リサーチ時点の実測 median ~2.5 秒に対する回帰防止線。実端末では 0.5〜0.7 秒を期待)。
-- このステップに固有の production 変更はない(Step 3〜8 の総和で Green になることを確認する)。
+- Arrange: 隔離 ZDOTDIR で 1 回ウォームアップ起動(dump 生成)/ Act: `zsh -i -c exit` を 5 回計測し median を取る / Assert: 900 ms 未満(リサーチ時点の実測 median ~2.5 秒に対する回帰防止線。実端末では 0.6〜0.8 秒を期待)。
+- このステップに固有の production 変更はない(Step 3〜7 の総和で Green になることを確認する)。
 
-### Step 10: 最終検証と後始末
+### Step 9: 最終検証と後始末
 
 1. `test/run` で全テスト Green を確認。
 2. `test/equivalence_test.zsh` を再実行し、baseline との差分が「既知の許容差分」のみであることを確認。
@@ -166,15 +147,13 @@ test/
 5. `fix: run compinit only once during startup`
 6. `test: assert completion dump stays stable across startups`
 7. `perf: skip compaudit via ZSH_DISABLE_COMPFIX`
-8. `perf: replace recursive config glob with depth-bounded glob`
-9. `test: add startup time regression test`
+8. `test: add startup time regression test`
 
 ## リスクと緩和
 
 | リスク | 緩和策 |
 | --- | --- |
 | fpath 移動により補完が欠ける | Step 5b の `_comps[c]` 検査 + Step 2 の `${(ok)_comps}` スナップショット比較 |
-| ロード順変更による alias 上書きの変化 | glob は深さ制限後にソートして従来の完全辞書順を維持(Step 8a で同一性を機械検証) |
 | oh-my-zsh を外した(将来の)構成で compinit が走らない | ガードを `(( $+functions[compdef] )) || compinit` にしているため、OMZ 不在時は従来どおり zshrc が compinit する |
 | 他マシン(work 以外)への影響 | 変更はすべて「未設定時は従来値」のフォールバック付き。`user-app-work/` はそもそも work マシンにしか存在しない |
 | compaudit スキップによる警告喪失 | 個人マシン運用のため許容。気になる場合は Step 7 のみ revert 可能(独立コミット) |
