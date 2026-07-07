@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+# Step 4: all dotfiles fpath entries (topic dirs + functions/) must be in
+# place before oh-my-zsh loads, because oh-my-zsh runs the (single) compinit.
+# The fpath setup therefore lives in zsh/path.zsh (path phase), not in
+# zsh/fpath.zsh / zsh/config.zsh (both load after user-app/ohmyzsh/).
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+zd=$(make_zdotdir)
+tracefile=$(mktemp "${TMPDIR:-/tmp}/dotfiles-trace.XXXXXX")
+trap 'rm -rf "$zd" "$tracefile"' EXIT
+
+trace_startup "$zd" "$tracefile"
+
+first_fpath_setup=$(grep -nE '> source .*/zsh/path\.zsh' "$tracefile" | head -1 | cut -d: -f1)
+first_omz=$(grep -nE '> source .*/oh-my-zsh\.sh' "$tracefile" | head -1 | cut -d: -f1)
+
+[[ -n "$first_omz" ]] || fail "trace contains no oh-my-zsh load"
+[[ -n "$first_fpath_setup" ]] || \
+  fail "should build dotfiles fpath before oh-my-zsh loads — zsh/path.zsh is never sourced"
+(( first_fpath_setup < first_omz )) || \
+  fail "should build dotfiles fpath before oh-my-zsh loads — zsh/path.zsh (line $first_fpath_setup) after oh-my-zsh (line $first_omz)"
+! grep -qE '> source .*/zsh/fpath\.zsh' "$tracefile" || \
+  fail "zsh/fpath.zsh is still sourced; its content belongs to zsh/path.zsh now"
+pass "should build dotfiles fpath before oh-my-zsh loads"
