@@ -7,14 +7,17 @@
 - 対話シェルの起動時間を **~2.5 秒 → 0.6〜0.8 秒** に短縮する。
 - 機能は変えない。挙動もできるだけ変えない(alias / 関数 / PATH / fpath / 補完登録は同値を維持)。
 
+> **実装結果(2026-07-07)**: 全 8 テスト PASS。サンドボックス実測で median **~700ms**(warm dump、gitstatus リトライのノイズ込み)。環境スナップショット(PATH / aliases / functions / fpath / `_comps` / options)は最適化前の baseline と完全一致。
+
 ## 方針(Research の結論)
 
 1. **compinit を 3 回 → 1 回に統合**し、dump キャッシュの「ピンポン無効化」を止める(最大の効果 ~1.6 秒)。
    - gcloud の completion ロードを path フェーズから completion フェーズへ移す。
    - fpath 構築(topic dirs + `functions/`)を oh-my-zsh ロードより前(path フェーズ)へ移す。
    - `zsh/zshrc.symlink:45` の素の `compinit` を `(( $+functions[compdef] )) || compinit` ガードに置き換え、oh-my-zsh の compinit を唯一の実行点にする。
-2. `ZSH_DISABLE_COMPFIX=true` で `compaudit` をスキップ(~70 ms)。
+2. `ZSH_DISABLE_COMPFIX=true` で oh-my-zsh 独自の insecurity 監査をスキップ。
    - 挙動差: insecure directory(fpath 上の group/world-writable なディレクトリ)が存在しない限り**完全に同一挙動**。実測で `compaudit` は現在何も検出していない(exit 0)。存在した場合のみ「警告表示+該当ディレクトリの補完スキップ(`compinit -i`)」→「警告なしで読み込み(`compinit -u`)」に変わる。独立コミットにするので単独 revert 可能。
+   - **実装時の発見**: `compinit` 内部の `compaudit`(`compinit:454-457`)は `-u` でも実行される。これを消すには `compinit -C` が必要だが、dump の鮮度検知(新しい補完ファイルの検出)まで無効になるため不採用。効果は oh-my-zsh の監査 1 回分(~10〜40ms)にとどまる。テストは「compaudit 実行がちょうど 1 回(compinit 内部のみ)」を固定する。
 3. 実 HOME に散乱した古い `.zcompdump*` を一回限り掃除する(キャッシュ安定化)。
 
 見送り(ユーザー判断・挙動リスクにより今回やらない): **`$DOTFILES/**/*.zsh` 再帰 glob の深さ制限化(~90 ms、ユーザー判断で見送り)**、pyenv の lazy 化、`brew shellenv` の静的化、`git/completion.zsh` 等のデッドコード修正。
@@ -23,14 +26,16 @@
 
 既存テストはないため `test/` を新設する。すべて zsh スクリプトで、失敗時に非ゼロ終了する。
 
+**重要(実装時に発見)**: テストファイルは **`.zsh` 拡張子を使ってはならない**。`zshrc.symlink` は `$DOTFILES/**/*.zsh` を全て起動時に source するため、`*.zsh` のテストは新しいシェルを開くたびに実行され、テスト自身が対話シェルを起動するため**無限再帰(フォーク爆弾)になる**。テスト本体は拡張子なし(`*_test`)、source 用ヘルパーは `.zsh.inc` とする。
+
 ```
 test/
-├── run                          # すべての *_test.zsh を順に実行するランナー
+├── run                          # すべての *_test を順に実行するランナー
+├── harness_test / *_test        # テスト本体(拡張子なし・実行可能)
 ├── helpers/
-│   ├── common.zsh               # assert_eq / assert_contains / fail などのヘルパー
-│   ├── run-interactive.zsh      # ZDOTDIR を一時 dir に隔離して zsh -i を起動(-x トレース対応)
-│   └── snapshot-env.zsh         # PATH / aliases / functions / fpath / ${(ok)_comps} / setopt をダンプ
-└── snapshots/                   # baseline スナップショット置き場(gitignore)
+│   ├── common.zsh.inc           # assert_eq / fail / make_zdotdir / trace_startup など
+│   └── snapshot-env             # PATH / aliases / functions / fpath / ${(ok)_comps} / options をダンプ
+└── snapshots/                   # baseline スナップショット置き場(gitignore 済み)
 ```
 
 隔離の仕組み: `ZDOTDIR=$(mktemp -d)` に「`export DOTFILES=<repo>` → `source <repo>/zsh/zshrc.symlink`」だけの `.zshrc` を置いて `zsh -i` を起動する。`compinit` も oh-my-zsh も dump パスに `${ZDOTDIR:-$HOME}` を使うため、**実 HOME の dump を汚さずに毎回クリーンな状態でテストできる**。

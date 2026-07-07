@@ -115,7 +115,8 @@
 - `~/.zcompdump-L15298-5.9.zwc`(2024-03、read-only 444)が残存。dump 掃除の際に一緒に消すこと(read-only なので `rm -f` が必要)。
 - p10k instant prompt は有効(キャッシュ存在確認済み)なので**体感**は一部マスクされているが、コマンド受付可能になるまでの実時間は 2.5 秒のまま。また起動中にエラー出力があると instant prompt が警告を出す。
 - サンドボックス内計測では gitstatus 初期化エラーが出る(`monitor` オプション不可のため)。実端末では発生しない。テストはこのノイズを許容する必要がある。
-- OMZ の compinit は `ZSH_DISABLE_COMPFIX=true` で `compaudit`(69ms)をスキップできる(`compinit -u` になる)。single-user Mac では実害なし。
+- OMZ の compinit は `ZSH_DISABLE_COMPFIX=true` で OMZ 独自の insecurity 監査をスキップできる(`compinit -u` になる)。ただし **compinit 内部の `compaudit`(`compinit:454-457`)は `-u` でも実行される**。完全に消すには `compinit -C` が必要だが dump 鮮度検知まで無効になるため見送り。single-user Mac では実害なし。
+- **テストファイルに `.zsh` 拡張子を使ってはならない**: `zshrc.symlink` が `$DOTFILES/**/*.zsh` を全て source するため、対話シェルを起動するテストが起動時に source されると無限再帰(フォーク爆弾)になる(実装時に実際に発生)。`test/` のテストは拡張子なし、ヘルパーは `.zsh.inc`。
 
 ## Similar Implementations
 
@@ -132,7 +133,7 @@
 | 施策 | 期待削減 | 挙動リスク |
 | --- | --- | --- |
 | compinit 統合(3→1)+ dump 安定化 | **~1.6 秒** | 低(fpath 順序を正しく移せば同値) |
-| `ZSH_DISABLE_COMPFIX=true` で compaudit スキップ | ~70 ms | 低(insecure dir が存在しない限り同一挙動。実測で compaudit の検出はゼロ) |
+| `ZSH_DISABLE_COMPFIX=true` で oh-my-zsh の insecurity 監査スキップ | ~10〜40 ms(compinit 内部の compaudit は `-u` でも走るため 70ms 全部は消えない) | 低(insecure dir が存在しない限り同一挙動。実測で compaudit の検出はゼロ) |
 | 古い `.zcompdump*` の掃除(一回限り) | 安定化に寄与 | なし |
 | (今回見送り・ユーザー判断)glob 深さ制限 + ソート | ~90 ms | 低(ファイル集合・順序同一を担保できるが見送り) |
 | (任意・今回見送り)pyenv lazy 化 | ~110 ms | 中(初回 pyenv 実行の挙動が変わる) |
