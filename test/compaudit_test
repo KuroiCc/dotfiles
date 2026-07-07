@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+# Step 7: ZSH_DISABLE_COMPFIX=true must drop oh-my-zsh's own insecurity
+# audit (handle_completion_insecurities). compinit's internal compaudit
+# still runs once even with -u — skipping that would need compinit -C,
+# which also disables dump-freshness detection, so we keep it.
+# Behavior is identical as long as no insecure (group/world writable) dir
+# sits in fpath — compaudit currently reports none on this machine.
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+zd=$(make_zdotdir)
+tracefile=$(mktemp "${TMPDIR:-/tmp}/dotfiles-trace.XXXXXX")
+trap 'rm -rf "$zd" "$tracefile"' EXIT
+
+trace_startup "$zd" "$tracefile"
+
+omz_audit=$(grep -cE '^\+handle_completion_insecurities' "$tracefile")
+assert_eq "$omz_audit" "0" \
+  "should not run oh-my-zsh insecurity audit during interactive startup"
+
+# invocation marker: first body line of compaudit (emulate -L zsh)
+invocations=$(grep -cE '^\+compaudit:13> emulate -L zsh' "$tracefile")
+assert_eq "$invocations" "1" \
+  "should run compaudit only once (compinit internal) during interactive startup"

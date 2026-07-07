@@ -84,6 +84,11 @@ plugins=(
   poetry
 )
 
+# Skip compaudit (~70ms): on this single-user machine no fpath dir is
+# group/world writable, so compinit -u behaves identically to the audited
+# path. If an insecure dir ever appears its completions load without warning.
+ZSH_DISABLE_COMPFIX=true
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
