@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+# Step 5: exactly one compinit per startup (oh-my-zsh's), and the custom
+# completions in functions/ must still be registered by it.
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+zd=$(make_zdotdir)
+tracefile=$(mktemp "${TMPDIR:-/tmp}/dotfiles-trace.XXXXXX")
+trap 'rm -rf "$zd" "$tracefile"' EXIT
+
+trace_startup "$zd" "$tracefile"
+
+count=$(grep -cE '\+compinit:[0-9]+> typeset -g _comp_dumpfile=' "$tracefile")
+assert_eq "$count" "1" "should run compinit exactly once during interactive startup"
+
+registered=$(run_interactive "$zd" 'print -r -- ${+_comps[c]}' | tail -1)
+assert_eq "$registered" "1" "should register custom completion for c command after startup"

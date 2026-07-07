@@ -42,8 +42,11 @@ do
 done
 
 # initialize autocomplete here, otherwise functions won't be loaded
+# oh-my-zsh (user-app/ohmyzsh/config.zsh) already ran compinit with the full
+# fpath in place (built in zsh/path.zsh), so only run it here if oh-my-zsh
+# was not loaded — a second compinit costs ~600ms and invalidates the dump.
 autoload -U compinit
-compinit
+(( $+functions[compdef] )) || compinit
 
 # load every completion after autocomplete loads
 for file in ${(M)config_files:#*/completion.zsh}
