@@ -1,0 +1,25 @@
+#!/usr/bin/env zsh
+# Step 3: the completion system must not be initialized during the path
+# phase (gcloud's completion.zsh.inc used to trigger compinit there);
+# the first compinit execution belongs to oh-my-zsh.
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+
+zd=$(make_zdotdir)
+tracefile=$(mktemp "${TMPDIR:-/tmp}/dotfiles-trace.XXXXXX")
+trap 'rm -rf "$zd" "$tracefile"' EXIT
+
+trace_startup "$zd" "$tracefile"
+
+first_compinit=$(grep -nE '\+compinit:[0-9]+> typeset -g _comp_dumpfile=' "$tracefile" | head -1 | cut -d: -f1)
+first_omz=$(grep -nE '> source .*/oh-my-zsh\.sh' "$tracefile" | head -1 | cut -d: -f1)
+
+[[ -n "$first_compinit" ]] || fail "trace contains no compinit execution (marker changed?)"
+[[ -n "$first_omz" ]] || fail "trace contains no oh-my-zsh load"
+
+(( first_omz < first_compinit )) || \
+  fail "should not run compinit before oh-my-zsh loads — compinit (trace line $first_compinit) ran before oh-my-zsh (trace line $first_omz)"
+pass "should not run compinit before oh-my-zsh loads"
