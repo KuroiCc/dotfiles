@@ -6,9 +6,16 @@ set -e
 
 cd "$(dirname $0)"/..
 
+root="$(pwd -P)"
+files_cmd="$root/script/lib/dotfiles-files"
+
+DOTFILES="$root" "$files_cmd" --ignored '**/install.sh' | while read installer; do
+    echo "› skip ./${installer#$root/} (.dotfilesignore.local)"
+done
+
 # find the installers and run them iteratively
-find . -name install.sh | while read installer; do
-    echo "› ${installer}"
+DOTFILES="$root" "$files_cmd" '**/install.sh' | while read installer; do
+    echo "› ./${installer#$root/}"
     sh -c "${installer}"
 done
 

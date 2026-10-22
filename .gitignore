@@ -21,3 +21,6 @@ git/gitconfig.local.symlink
 /bin/center-ci
 /bin/t
 /bin/ffmpeg
+
+# machine-local ignore rules for the dotfiles loader (see script/lib/dotfiles-files)
+.dotfilesignore.local

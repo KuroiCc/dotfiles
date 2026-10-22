@@ -143,7 +143,16 @@ install_dotfiles () {
 
   local overwrite_all=false backup_all=false skip_all=false
 
-  for src in $(find -H "$DOTFILES_ROOT" -maxdepth 3 -name '*.symlink' -not -path '*.git*')
+  local files_cmd="$DOTFILES_ROOT/script/lib/dotfiles-files"
+  local symlink_globs=('*.symlink' '*/*.symlink' '*/*/*.symlink')
+
+  # already-linked files are left in place; we only stop linking new ones
+  for src in $(DOTFILES="$DOTFILES_ROOT" "$files_cmd" --ignored "${symlink_globs[@]}")
+  do
+    info "skipped $src (.dotfilesignore.local)"
+  done
+
+  for src in $(DOTFILES="$DOTFILES_ROOT" "$files_cmd" "${symlink_globs[@]}")
   do
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"

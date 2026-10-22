@@ -25,9 +25,11 @@ if [[ -a ~/.localrc ]]; then
     source ~/.localrc
 fi
 
-# all of our zsh files
+# all of our zsh files, minus those excluded by .dotfilesignore.local
+source $DOTFILES/script/lib/dotfiles-files
 typeset -U config_files
-config_files=($DOTFILES/**/*.zsh)
+dotfiles_files config_files _ignored_config_files '**/*.zsh'
+unset _ignored_config_files
 
 # load the path files
 for file in ${(M)config_files:#*/path.zsh}
