@@ -1,0 +1,112 @@
+#!/usr/bin/env zsh
+#
+# Single source of truth for "which files under $DOTFILES does the dotfiles
+# machinery pick up" (zsh startup, script/install, script/bootstrap).
+#
+# Files can be excluded per machine with `.dotfilesignore.local` files, which
+# use .gitignore syntax and semantics (comments, `!` negation, `dir/`, `**`,
+# patterns relative to the directory holding the file). They are gitignored.
+# Matching is delegated to `git ls-files --exclude-per-directory`, so only
+# `.dotfilesignore.local` files are consulted — .gitignore is NOT applied.
+#
+# No `.zsh` suffix on purpose: zshrc auto-sources every *.zsh under $DOTFILES.
+#
+# Usage (sourced):
+#   dotfiles_files <kept_var> <ignored_var> <glob>...
+#     Globs are zsh patterns relative to $DOTFILES (qualifiers allowed).
+#     Sets the two arrays to absolute paths, in glob order.
+#
+# Usage (executed, for bash callers):
+#   dotfiles-files [--ignored] <glob>...
+#     Prints the kept (or, with --ignored, the ignored) paths, one per line.
+
+# Per-shell cache. Startup calls into this several times, and both a tree
+# walk and a git spawn (via the xcrun shim) cost ~30ms each, so:
+#   _dotfiles_ignore_files      the .dotfilesignore.local files, found in the
+#                               same walk as the first `**/<name>` glob
+#   _dotfiles_toplevel          direct child files of the top-level dirs, and
+#   _dotfiles_toplevel_ignored  which of them are ignored — resolved in the
+#                               same git call as the first filtered query
+_dotfiles_find_ignore_files() {
+  (( ${+_dotfiles_ignore_files} )) && return
+  typeset -ga _dotfiles_ignore_files
+  _dotfiles_ignore_files=(${DOTFILES:-$HOME/.dotfiles}/**/.dotfilesignore.local(N))
+}
+
+dotfiles_files() {
+  emulate -L zsh
+  setopt extended_glob null_glob
+
+  local _df_kept_var=$1 _df_ignored_var=$2
+  shift 2
+
+  local _df_root=${DOTFILES:-$HOME/.dotfiles}
+  local -a _df_candidates _df_ignored _df_kept _df_hits _df_top _df_out
+  local _df_glob _df_name
+  for _df_glob in "$@"; do
+    _df_name=${_df_glob#'**/'}
+    if (( ! ${+_dotfiles_ignore_files} )) && [[ $_df_glob == '**/'* && $_df_name != *[/\(\)]* ]]; then
+      _df_hits=($_df_root/**/(${~_df_name}|.dotfilesignore.local))
+      typeset -ga _dotfiles_ignore_files
+      _dotfiles_ignore_files=(${(M)_df_hits:#*/.dotfilesignore.local})
+      _df_candidates+=(${_df_hits:#*/.dotfilesignore.local})
+    else
+      _df_candidates+=($_df_root/${~_df_glob})
+    fi
+  done
+
+  _dotfiles_find_ignore_files
+
+  if (( ${#_dotfiles_ignore_files} && ${#_df_candidates} )); then
+    (( ${+_dotfiles_toplevel} )) || _df_top=($_df_root/*/*(.))
+    if _df_out=("${(@0)$(GIT_LITERAL_PATHSPECS=1 git -C $_df_root ls-files \
+        -z -c -o -i --exclude-per-directory=.dotfilesignore.local \
+        -- ${_df_candidates#$_df_root/} ${_df_top#$_df_root/} 2>/dev/null)}"); then
+      _df_ignored=($_df_root/${^_df_out:#})
+      if (( ! ${+_dotfiles_toplevel} )); then
+        typeset -ga _dotfiles_toplevel _dotfiles_toplevel_ignored
+        _dotfiles_toplevel=($_df_top)
+        _dotfiles_toplevel_ignored=(${_df_top:*_df_ignored})
+      fi
+    else
+      # Fail open: a broken shell startup is worse than a skipped filter.
+      print -ru2 -- "dotfiles-files: git ls-files failed in $_df_root; .dotfilesignore.local not applied"
+    fi
+  fi
+
+  _df_kept=(${_df_candidates:|_df_ignored})
+  _df_ignored=(${_df_candidates:*_df_ignored})
+  set -A $_df_kept_var "${_df_kept[@]}"
+  set -A $_df_ignored_var "${_df_ignored[@]}"
+}
+
+# dotfiles_dir_ignored <dir>
+#   Succeeds when <dir> (a top-level dir of $DOTFILES, absolute) is wholly
+#   ignored: it has direct child files and every one of them is ignored.
+#   Used for the directory-level hooks (fpath topic folders, bin/ on PATH),
+#   which cannot drop single files.
+dotfiles_dir_ignored() {
+  emulate -L zsh
+  _dotfiles_find_ignore_files
+  (( ${#_dotfiles_ignore_files} )) || return 1
+  local -a _dfd_kept _dfd_ignored
+  (( ${+_dotfiles_toplevel} )) || dotfiles_files _dfd_kept _dfd_ignored '*/*(.)'
+  _dfd_ignored=(${(M)_dotfiles_toplevel_ignored:#$1/*})
+  _dfd_kept=(${(M)${_dotfiles_toplevel:|_dotfiles_toplevel_ignored}:#$1/*})
+  (( ${#_dfd_ignored} && ! ${#_dfd_kept} ))
+}
+
+if [[ $ZSH_EVAL_CONTEXT == toplevel ]]; then
+  cli_mode=kept
+  if [[ $1 == --ignored ]]; then
+    cli_mode=ignored
+    shift
+  fi
+  dotfiles_files cli_kept cli_ignored "$@"
+  if [[ $cli_mode == kept ]]; then
+    (( ${#cli_kept} )) && print -rl -- $cli_kept
+  else
+    (( ${#cli_ignored} )) && print -rl -- $cli_ignored
+  fi
+  exit 0
+fi

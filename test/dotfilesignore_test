@@ -1,0 +1,69 @@
+#!/usr/bin/env zsh
+# .dotfilesignore.local: gitignore-style per-machine exclusion applied by
+# script/lib/dotfiles-files to every file the dotfiles machinery picks up.
+emulate -L zsh
+set -u
+
+REPO_ROOT=${0:A:h:h}
+source "$REPO_ROOT/test/helpers/common.zsh.inc"
+LIB=$REPO_ROOT/script/lib/dotfiles-files
+
+root=$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-ignore.XXXXXX")
+root=${root:A}
+norepo=$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-norepo.XXXXXX")
+norepo=${norepo:A}
+trap 'rm -rf "$root" "$norepo"' EXIT
+
+# Fixture repo: tracked files, an untracked file and a .gitignore'd dir.
+mkdir -p $root/{a/b,c,work/x,user-app/ffmpeg,bin,skipme}
+touch $root/{a/install.sh,a/x.zsh,a/b/install.sh,c/install.sh,c/y.zsh} \
+      $root/{work/x/install.sh,user-app/ffmpeg/install.sh,bin/tool,skipme/f}
+print -r -- 'work/' > $root/.gitignore
+git -C $root init -q
+git -C $root add a c user-app bin skipme .gitignore
+git -C $root -c user.name=t -c user.email=t@t commit -qm init
+touch $root/c/untracked.zsh
+
+# run the helper in a fresh shell, so its per-shell cache starts empty
+files() { DOTFILES=$root zsh -f "$LIB" "$@" | sed "s|^$root/||" | sort | paste -sd' ' - }
+
+assert_eq "$(files '**/install.sh')" \
+  "a/b/install.sh a/install.sh c/install.sh user-app/ffmpeg/install.sh work/x/install.sh" \
+  "should keep every candidate when no .dotfilesignore.local exists"
+
+printf '# comment\ninstall.sh\n!b/install.sh\n' > $root/a/.dotfilesignore.local
+printf 'user-app/ffmpeg/\nskipme/\n' > $root/.dotfilesignore.local
+print -r -- 'untracked.zsh' > $root/c/.dotfilesignore.local
+
+assert_eq "$(files '**/install.sh')" \
+  "a/b/install.sh c/install.sh work/x/install.sh" \
+  "should drop installers matched by nested and root ignore files, honouring negation"
+assert_eq "$(files --ignored '**/install.sh')" \
+  "a/install.sh user-app/ffmpeg/install.sh" \
+  "should list the ignored installers with --ignored"
+assert_eq "$(files '**/*.zsh')" "a/x.zsh c/y.zsh" \
+  "should apply rules to untracked files too"
+assert_eq "$(files 'work/**/install.sh')" "work/x/install.sh" \
+  "should not apply .gitignore rules"
+
+dir_ignored() { DOTFILES=$root zsh -fc 'source "$1"; dotfiles_dir_ignored "$2"' _ "$LIB" "$1" }
+dir_ignored $root/skipme || fail "should treat a top-level dir whose files are all ignored as ignored"
+pass "should treat a top-level dir whose files are all ignored as ignored"
+! dir_ignored $root/a || fail "should not treat a partly ignored dir as ignored"
+pass "should not treat a partly ignored dir as ignored"
+print -r -- '*' > $root/bin/.dotfilesignore.local
+dir_ignored $root/bin || fail "should treat bin/ with '*' as ignored"
+pass "should treat bin/ with '*' as ignored"
+
+# zshrc order: the file query seeds the top-level cache that path.zsh uses
+primed() { DOTFILES=$root zsh -fc 'source "$1"; dotfiles_files k i "**/install.sh"; dotfiles_dir_ignored "$2"' _ "$LIB" "$1" }
+primed $root/skipme || fail "should treat an ignored top-level dir as ignored after a file query"
+! primed $root/a || fail "should not treat a partly ignored dir as ignored after a file query"
+pass "should reuse the top-level cache seeded by a file query"
+
+# no git repo: fail open (keep everything) and warn
+mkdir -p $norepo/x && touch $norepo/x/install.sh && print -r -- '*' > $norepo/x/.dotfilesignore.local
+out=$(DOTFILES=$norepo zsh -f "$LIB" '**/install.sh' 2>$root/err)
+assert_eq "$out" "$norepo/x/install.sh" "should keep every file when git cannot evaluate the rules"
+grep -q 'not applied' $root/err || fail "should warn when the rules cannot be applied"
+pass "should warn when the rules cannot be applied"
