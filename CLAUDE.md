@@ -40,6 +40,7 @@ To add new functionality, create a `.zsh` file in the appropriate topic director
 - **`user-app/`** manages non-critical or work-specific app configurations. Each subdirectory typically has `path.zsh`, `aliases.zsh`, or `config.zsh`.
 - **`bin/`** is added to `$PATH`. Scripts here are globally available. Work-specific scripts (e.g., `t`, `dbup`, `feup`) are gitignored.
 - **`functions/`** contains zsh autoload functions, added to `fpath`.
+- **`.dotfilesignore.local`** (gitignored, any directory) excludes files on this machine with `.gitignore` syntax, relative to the directory holding it: matched `*.zsh` are not sourced, `install.sh` not run, `*.symlink` not linked (existing links are kept), and a top-level dir whose direct files are all ignored is left out of `fpath` / `PATH`. All file discovery goes through `script/lib/dotfiles-files`.
 
 ## Shell Environment
 
